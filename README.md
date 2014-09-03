@@ -125,6 +125,7 @@ with the following properties:
 	> ```relationship``` - an entity relationship
 	> ```icon``` - an entity icon
 	> ```cover``` - an entity cover image
+	> ```category``` - entity categories (hypeCategories)
 * ```value_type``` - type of value if different from ```type```, e.g when a text input expects a number
 * ```input_view``` - view used to dipslay an input, if different from "input/$type"
 * ```output_view``` - view used to dipslay an output, if different from "output/$type"

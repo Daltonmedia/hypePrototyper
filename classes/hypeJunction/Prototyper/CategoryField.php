@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Handle relationship fields
+ * Handle category fields
  */
 
 namespace hypeJunction\Prototyper;
@@ -9,7 +9,7 @@ namespace hypeJunction\Prototyper;
 use ElggEntity;
 use stdClass;
 
-class RelationshipField extends Field {
+class CategoryField extends RelationshipField {
 
 	/**
 	 * Inverse relationship
@@ -24,26 +24,21 @@ class RelationshipField extends Field {
 	protected $bilateral = false;
 
 	/**
-	 * Construct a new relationship field
+	 * Construct a new category field
 	 * @param string $shortname
 	 * @param ElggEntity $entity
 	 * @param array $options
 	 */
 	function __construct($shortname, $entity, $options = '') {
 		parent::__construct($shortname, $entity, $options);
-		if (isset($this->input_vars->inverse_relationship)) {
-			$this->inverse_relationship = $this->input_vars->inverse_relationship;
-			unset($this->input_vars->inverse_relationship);
-		}
-		if (isset($this->input_vars->bilateral)) {
-			$this->inverse_relationship = $this->input_vars->bilateral;
-			unset($this->input_vars->bilateral);
-		}
+		
+		$this->inverse_relationship = false;
+		$this->belateral = false;
 		if (isset($this->multiple)) {
 			$this->input_vars->multiple = true;
 		}
 		$this->multiple = false;
-		$this->data_type = 'relationship';
+		$this->data_type = 'category';
 		$this->value_type = 'entity';
 	}
 
@@ -62,7 +57,7 @@ class RelationshipField extends Field {
 	 */
 	function viewInput($vars = array()) {
 		$vars['field'] = $this;
-		return elgg_view('forms/prototyper/relationship', $vars);
+		return elgg_view('forms/prototyper/category', $vars);
 	}
 
 	/**
@@ -72,7 +67,7 @@ class RelationshipField extends Field {
 	 */
 	function viewOutput($vars = array()) {
 		$vars['field'] = $this;
-		return elgg_view('output/prototyper/relationship', $vars);
+		return elgg_view('output/prototyper/category', $vars);
 	}
 
 	/**

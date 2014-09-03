@@ -148,6 +148,10 @@ class Form {
 					$field = new RelationshipField($shortname, $this->entity, $options);
 					break;
 
+				case 'category' :
+					$field = new CategoryField($shortname, $this->entity, $options);
+					break;
+
 				case 'icon' :
 					$field = new IconField($shortname, $this->entity, $options);
 					break;
