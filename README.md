@@ -33,7 +33,7 @@ provide a list of fields, which can vary based on entity properties:
 
 ```php
 
-elgg_register_plugin_hook_handler('prototype', 'form:profile/edit', 'prepare_profile_edit_form');
+elgg_register_plugin_hook_handler('prototype', 'profile/edit', 'prepare_profile_edit_form');
 
 function prepare_profile_edit_form($hook, $type, $return, $params) {
 
