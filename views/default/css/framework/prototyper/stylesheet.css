@@ -544,3 +544,24 @@ form .prototyper-fieldset {
 .elgg-icon.elgg-icon-prototyper-round-minus:after {
   content: "\f056";
 }
+
+.prototyper-output {
+  padding: 10px;
+  border-top: 1px solid #dddddd;
+}
+.prototyper-output:last-child {
+  border-bottom: 1px solid #dddddd;
+}
+.prototyper-output .elgg-output {
+  margin: 4px  0 0 4px;
+}
+.prototyper-output p {
+  margin: 0;
+}
+.prototyper-output label {
+  font-weight: normal;
+  font-size: 95%;
+}
+.prototyper-output.even {
+  background: #f7f7f7;
+}

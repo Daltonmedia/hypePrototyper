@@ -17,6 +17,9 @@ if (!$entity || !$name) {
 
 $label = $field->getLabel();
 $view = $field->getOutputView();
+if (!elgg_view_exists($view)) {
+	$view = 'output/longtext';
+}
 $type = $field->getType();
 $class = $field->getMicroformat();
 
@@ -34,8 +37,15 @@ if (empty($values)) {
 	return true;
 }
 
-$vars['value'] = $values;
-$output = elgg_view($view, $vars);
+if (is_array($values) && $type !== 'tags') {
+	foreach ($values as $value) {
+		$vars['value'] = $value;
+		$output .= '<div>' . elgg_view($view, $vars) . '</div>';
+	}
+} else {
+	$vars['value'] = $values;
+	$output = elgg_view($view, $vars);
+}
 
 if (!$output) {
 	return true;
@@ -43,8 +53,8 @@ if (!$output) {
 
 echo <<<__HTML
 <div class="prototyper-output-metadata">
-	<b class="prototyper-label">$label</b>
-	<span class="$class">$output</span>
+	<label class="prototyper-label">$label</label>
+	<div class="elgg-output $class">$output</div>
 </div>
 __HTML;
 

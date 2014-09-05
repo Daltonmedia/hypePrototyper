@@ -4,7 +4,7 @@ namespace hypeJunction\Prototyper;
 
 $field = elgg_extract('field', $vars);
 
-if (!$field instanceof RelationshipField) {
+if (!$field instanceof CategoryField) {
 	return true;
 }
 
@@ -44,7 +44,7 @@ if ($type == 'hidden') {
 }
 ?>
 
-<fieldset class="prototyper-fieldset prototyper-fieldset-relationship">
+<fieldset class="prototyper-fieldset prototyper-fieldset-category">
 	<div class="elgg-head">
 		<div class="prototyper-col-12">
 			<?php

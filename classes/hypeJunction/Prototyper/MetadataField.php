@@ -69,16 +69,17 @@ class MetadataField extends Field {
 				'limit' => 0,
 			));
 		}
+
 		if (!is_array($values) || !count($values)) {
 			$values = array(new ElggMetadata);
 		} else if ($this->getValueType() == 'tags' && !$this->isMultiple()) {
 			$shortname = $this->getShortname();
 			$md = new stdClass();
-			$md->id = '';
+			$md->id = $values[0]->id;
 			$md->name = $shortname;
 			$md->value = implode(', ', $this->entity->$shortname);
 			$md->access_id = $values[0]->access_id;
-			$md->owner_guid = $this->entity->owner_guid;
+			$md->owner_guid = $values[0]->owner_guid;
 			$values = array($md);
 		}
 

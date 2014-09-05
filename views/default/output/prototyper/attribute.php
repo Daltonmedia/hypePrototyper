@@ -35,7 +35,7 @@ if (!$output) {
 
 echo <<<__HTML
 <div class="prototyper-output-attribute">
-	<b class="prototyper-label">$label</b>
-	<span class="$class">$output</span>
+	<label class="prototyper-label">$label</label>
+	<div class="elgg-output $class">$output</div>
 </div>
 __HTML;

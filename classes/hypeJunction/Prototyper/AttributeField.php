@@ -18,6 +18,9 @@ class AttributeField extends Field {
 	function __construct($shortname, $entity, $options = '') {
 		parent::__construct($shortname, $entity, $options);
 		$this->data_type = 'attribute';
+		if (!isset($options['output_view'])) {
+			$this->output_view = false;
+		}
 	}
 
 	/**

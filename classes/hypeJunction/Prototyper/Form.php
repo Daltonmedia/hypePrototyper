@@ -257,7 +257,7 @@ class Form {
 				continue;
 			}
 			$even_odd = ( 'odd' != $even_odd ) ? 'odd' : 'even';
-			$output .= "<div class=\"$even_odd\">$op</div>";
+			$output .= "<div class=\"prototyper-output $even_odd\">$op</div>";
 		}
 
 		return $output;

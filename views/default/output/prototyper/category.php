@@ -49,7 +49,7 @@ if (!$output) {
 }
 
 echo <<<__HTML
-<div class="prototyper-output-relationship">
+<div class="prototyper-output-category">
 	<label class="prototyper-label">$label</label>
 	<div class="elgg-output $class">$output</div>
 </div>

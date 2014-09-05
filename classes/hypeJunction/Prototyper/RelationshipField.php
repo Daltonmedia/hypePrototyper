@@ -83,16 +83,18 @@ class RelationshipField extends Field {
 		$sticky = $this->getStickyValue();
 		$values = array();
 		if (!$sticky) {
-			$entities = elgg_get_entities_from_relationship(array(
-				'relationship_guid' => $this->entity->guid,
-				'relationship' => $this->getShortname(),
-				'inverse_relationship' => $this->inverse_relationship,
-				'limit' => 0,
-				'callback' => false,
-			));
-			if (is_array($entities) && count($entities)) {
-				foreach ($entities as $entity) {
-					$values[] = $entity->guid;
+			if ($this->entity->guid) {
+				$entities = elgg_get_entities_from_relationship(array(
+					'relationship_guid' => $this->entity->guid,
+					'relationship' => $this->getShortname(),
+					'inverse_relationship' => $this->inverse_relationship,
+					'limit' => 0,
+					'callback' => false,
+				));
+				if (is_array($entities) && count($entities)) {
+					foreach ($entities as $entity) {
+						$values[] = $entity->guid;
+					}
 				}
 			}
 		} else {
@@ -148,7 +150,7 @@ class RelationshipField extends Field {
 		}
 
 		$future_relationships_ids = get_input($this->getShortname(), array());
-		
+
 		if (!is_array($future_relationships_ids)) {
 			$future_relationships_ids = array();
 		}
