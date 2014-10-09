@@ -24,27 +24,29 @@ class RelationshipField extends Field {
 	protected $bilateral = false;
 
 	/**
-	 * Construct a new relationship field
+	 * Get new field instance
 	 * @param string $shortname
-	 * @param ElggEntity $entity
-	 * @param array $options
+	 * @param array|string $options
+	 * @return \self
 	 */
-	function __construct($shortname, $entity, $options = '') {
-		parent::__construct($shortname, $entity, $options);
-		if (isset($this->input_vars->inverse_relationship)) {
-			$this->inverse_relationship = $this->input_vars->inverse_relationship;
-			unset($this->input_vars->inverse_relationship);
+	public static function getInstance($shortname, $options = '') {
+		$instance = new self($shortname, $options);
+		if (isset($instance->input_vars->inverse_relationship)) {
+			$instance->inverse_relationship = $instance->input_vars->inverse_relationship;
+			unset($instance->input_vars->inverse_relationship);
 		}
-		if (isset($this->input_vars->bilateral)) {
-			$this->inverse_relationship = $this->input_vars->bilateral;
-			unset($this->input_vars->bilateral);
+		if (isset($instance->input_vars->bilateral)) {
+			$instance->inverse_relationship = $instance->input_vars->bilateral;
+			unset($instance->input_vars->bilateral);
 		}
-		if (isset($this->multiple)) {
-			$this->input_vars->multiple = $this->multiple;
+		if (isset($instance->multiple)) {
+			$instance->input_vars->multiple = $instance->multiple;
 		}
-		$this->multiple = false;
-		$this->data_type = 'relationship';
-		$this->value_type = 'entity';
+		$instance->multiple = false;
+		$instance->data_type = 'relationship';
+		$instance->value_type = 'entity';
+
+		return $instance;
 	}
 
 	/**
@@ -83,9 +85,9 @@ class RelationshipField extends Field {
 		$sticky = $this->getStickyValue();
 		$values = array();
 		if (!$sticky) {
-			if ($this->entity->guid) {
+			if ($this->getEntity()->guid) {
 				$entities = elgg_get_entities_from_relationship(array(
-					'relationship_guid' => $this->entity->guid,
+					'relationship_guid' => $this->getEntity()->guid,
 					'relationship' => $this->getShortname(),
 					'inverse_relationship' => $this->inverse_relationship,
 					'limit' => 0,
@@ -135,7 +137,7 @@ class RelationshipField extends Field {
 		$shortname = $this->getShortname();
 
 		$current_relationships = elgg_get_entities_from_relationship(array(
-			'relationship_guid' => $this->entity->guid,
+			'relationship_guid' => $this->getEntity()->guid,
 			'relationship' => $shortname,
 			'inverse_relationship' => $this->inverse_relationship,
 			'limit' => 0,
@@ -157,7 +159,7 @@ class RelationshipField extends Field {
 
 		$params = array(
 			'field' => $this,
-			'entity' => $this->entity,
+			'entity' => $this->getEntity(),
 			'relationship' => $shortname,
 			'value' => $current_relationships_ids,
 			'future_value' => $future_relationships_ids,
@@ -171,31 +173,31 @@ class RelationshipField extends Field {
 		$to_delete = array_diff($current_relationships_ids, $future_relationships_ids);
 		foreach ($to_delete as $guid) {
 			if (!$this->inverse_relationship || $this->bilateral) {
-				remove_entity_relationship($this->entity->guid, $shortname, $guid);
+				remove_entity_relationship($this->getEntity()->guid, $shortname, $guid);
 			}
 
 			if ($this->inverse_relationship || $this->bilateral) {
-				remove_entity_relationship($guid, $shortname, $this->entity->guid);
+				remove_entity_relationship($guid, $shortname, $this->getEntity()->guid);
 			}
 		}
 
 		foreach ($future_relationships_ids as $guid) {
 			if (!$this->inverse_relationship || $this->bilateral) {
-				if (!check_entity_relationship($this->entity->guid, $shortname, $guid)) {
-					add_entity_relationship($this->entity->guid, $shortname, $guid);
+				if (!check_entity_relationship($this->getEntity()->guid, $shortname, $guid)) {
+					add_entity_relationship($this->getEntity()->guid, $shortname, $guid);
 				}
 			}
 
 			if ($this->inverse_relationship || $this->bilateral) {
-				if (!check_entity_relationship($guid, $shortname, $this->entity->guid)) {
-					add_entity_relationship($guid, $shortname, $this->entity->guid);
+				if (!check_entity_relationship($guid, $shortname, $this->getEntity()->guid)) {
+					add_entity_relationship($guid, $shortname, $this->getEntity()->guid);
 				}
 			}
 		}
 
 		$params = array(
 			'field' => $this,
-			'entity' => $this->entity,
+			'entity' => $this->getEntity(),
 			'relationship_name' => $shortname,
 			'value' => $future_relationships_ids,
 			'previous_value' => $current_relationships_ids,

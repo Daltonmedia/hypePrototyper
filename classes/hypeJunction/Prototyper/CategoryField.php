@@ -11,23 +11,24 @@ use stdClass;
 
 class CategoryField extends RelationshipField {
 
-	/**
-	 * Construct a new category field
+		/**
+	 * Get new field instance
 	 * @param string $shortname
-	 * @param ElggEntity $entity
-	 * @param array $options
+	 * @param array|string $options
+	 * @return \self
 	 */
-	function __construct($shortname, $entity, $options = '') {
-		parent::__construct($shortname, $entity, $options);
-
-		$this->inverse_relationship = true;
-		$this->belateral = false;
-		if (isset($this->multiple)) {
-			$this->input_vars->multiple = true;
+	public static function getInstance($shortname, $options = '') {
+		$instance = new self($shortname, $options);
+		$instance->inverse_relationship = true;
+		$instance->belateral = false;
+		if (isset($instance->multiple)) {
+			$instance->input_vars->multiple = true;
 		}
-		$this->data_type = 'category';
-		$this->input_view = 'input/categories';
-		$this->output_view = 'input/categories';
+		$instance->data_type = 'category';
+		$instance->input_view = 'input/categories';
+		$instance->output_view = 'input/categories';
+
+		return $instance;
 	}
 
 	/**

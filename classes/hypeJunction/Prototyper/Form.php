@@ -25,19 +25,12 @@ class Form {
 	protected $fields;
 
 	/**
-	 * Entity
-	 * @var ElggEntity
-	 */
-	protected $entity;
-
-	/**
 	 * Construct a new form
 	 * @param string $action		A registered action
-	 * @param Elggentity $entity	An entity, which this form is editing
 	 * @param array $params			Additional params
 	 * @throws Exception
 	 */
-	public function __construct($action, $entity, $params = array()) {
+	private function __construct($action, $params = array()) {
 
 		if (!$action || !elgg_action_exists($action)) {
 			throw new Exception(get_class($this) . ' expects a valid registered action');
@@ -45,16 +38,14 @@ class Form {
 
 		$this->action = $action;
 
-		if (!elgg_instanceof($entity)) {
-			throw new Exception(get_class($this) . ' requires a valid Elgg entity');
+		if (!elgg_instanceof($this->getEntity())) {
+			throw new Exception(get_class($this) . ' should be called after a prototype has been instantiated');
 		}
-
-		$this->entity = $entity;
 
 		if (!is_array($params)) {
 			$params = array();
 		}
-		$params['entity'] = $this->entity;
+		$params['entity'] = $this->getEntity();
 
 		$fields = elgg_trigger_plugin_hook('prototype', "$action", $params, array());
 
@@ -63,6 +54,16 @@ class Form {
 		}
 
 		$this->setFields($fields);
+	}
+
+	/**
+	 * Construct a new form
+	 * @param string $action		A registered action
+	 * @param array $params			Additional params
+	 * @throws Exception
+	 */
+	public static function getInstance($action, $params = array()) {
+		return new self($action, $params);
 	}
 
 	/**
@@ -97,7 +98,7 @@ class Form {
 	 * @return ElggEntity
 	 */
 	public function getEntity() {
-		return $this->entity;
+		return Prototype::getEntity();
 	}
 
 	/**
@@ -127,37 +128,37 @@ class Form {
 				default :
 					$class_name = elgg_extract('class_name', $options);
 					if (class_exists($class_name)) {
-						$field = new $class_name($shortname, $this->entity, $options);
+						$field = $class_name::getInstance($shortname, $options);
 					}
 					break;
 
 				case 'attribute' :
 				case 'metadata' :
-					if (in_array($shortname, Prototype::getAttributeNames($this->entity))) {
-						$field = new AttributeField($shortname, $this->entity, $options);
+					if (in_array($shortname, Prototype::getAttributeNames($this->getEntity()))) {
+						$field = AttributeField::getInstance($shortname, $options);
 					} else {
-						$field = new MetadataField($shortname, $this->entity, $options);
+						$field = MetadataField::getInstance($shortname, $options);
 					}
 					break;
 
 				case 'annotation' :
-					$field = new AnnotationField($shortname, $this->entity, $options);
+					$field = AnnotationField::getInstance($shortname, $options);
 					break;
 
 				case 'relationship' :
-					$field = new RelationshipField($shortname, $this->entity, $options);
+					$field = RelationshipField::getInstance($shortname, $options);
 					break;
 
 				case 'category' :
-					$field = new CategoryField($shortname, $this->entity, $options);
+					$field = CategoryField::getInstance($shortname, $options);
 					break;
 
 				case 'icon' :
-					$field = new IconField($shortname, $this->entity, $options);
+					$field = IconField::getInstance($shortname, $options);
 					break;
 
 				case 'cover' :
-					$field = new CoverField($shortname, $this->entity, $options);
+					$field = CoverField::getInstance($shortname, $options);
 					break;
 			}
 

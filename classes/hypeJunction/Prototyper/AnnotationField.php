@@ -5,21 +5,22 @@
  */
 namespace hypeJunction\Prototyper;
 
-use ElggEntity;
 use ElggAnnotation;
 use stdClass;
 
 class AnnotationField extends Field {
 
 	/**
-	 * Construct a new annotation field
+	 * Get new field instance
 	 * @param string $shortname
-	 * @param ElggEntity $entity
-	 * @param array $options
+	 * @param array|string $options
+	 * @return \self
 	 */
-	function __construct($shortname, $entity, $options = '') {
-		parent::__construct($shortname, $entity, $options);
-		$this->data_type = 'annotation';
+	public static function getInstance($shortname, $options = '') {
+		$instance = new self($shortname, $options);
+		$instance->data_type = 'annotation';
+
+		return $instance;
 	}
 
 	/**
@@ -50,7 +51,7 @@ class AnnotationField extends Field {
 		$sticky = $this->getStickyValue();
 		if (!$sticky) {
 			$values = elgg_get_annotations(array(
-				'guids' => $this->entity->guid,
+				'guids' => $this->getEntity()->guid,
 				'annotation_names' => $this->getShortname(),
 				'limit' => 0,
 			));
@@ -116,7 +117,7 @@ class AnnotationField extends Field {
 		$shortname = $this->getShortname();
 
 		$current_annotation = elgg_get_annotations(array(
-			'guids' => $this->entity->guid,
+			'guids' => $this->getEntity()->guid,
 			'annotation_names' => $shortname,
 		));
 
@@ -134,7 +135,7 @@ class AnnotationField extends Field {
 
 		$params = array(
 			'field' => $this,
-			'entity' => $this->entity,
+			'entity' => $this->getEntity(),
 			'annotation_name' => $shortname,
 			'value' => $current_annotation,
 			'future_value' => $future_annotation,
@@ -168,7 +169,7 @@ class AnnotationField extends Field {
 				if ($id) {
 					update_annotation($id, $name, $value, '', $owner_guid, $access_id);
 				} else {
-					$id = create_annotation($this->entity->guid, $name, $value, '', $owner_guid, $access_id, true);
+					$id = create_annotation($this->getEntity()->guid, $name, $value, '', $owner_guid, $access_id, true);
 				}
 				$ids[] = $id;
 			} else {
@@ -176,14 +177,14 @@ class AnnotationField extends Field {
 					elgg_delete_annotation_by_id($id);
 				}
 				foreach ($value as $val) {
-					$ids[] = create_annotation($this->entity->guid, $name, $val, '', $owner_guid, $access_id, true);
+					$ids[] = create_annotation($this->getEntity()->guid, $name, $val, '', $owner_guid, $access_id, true);
 				}
 			}
 		}
 
 		$params = array(
 			'field' => $this,
-			'entity' => $this->entity,
+			'entity' => $this->getEntity(),
 			'annotation_name' => $shortname,
 			'value' => (count($ids)) ? elgg_get_annotations(array('ids' => $ids)) : array(),
 			'previous_value' => $current_annotation,

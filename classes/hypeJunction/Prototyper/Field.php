@@ -85,12 +85,6 @@ abstract class Field {
 	protected $sticky_value;
 
 	/**
-	 * Entity this field applies to
-	 * @var ElggEntity
-	 */
-	protected $entity;
-
-	/**
 	 * Vars passed to the input view
 	 * @var stdClass
 	 */
@@ -116,22 +110,39 @@ abstract class Field {
 
 	/**
 	 * Construct a new field
+	 *
 	 * @param string $shortname
-	 * @param ElggEntity $entity
 	 * @param array $options
 	 * @throws Exception
 	 */
-	function __construct($shortname, $entity, $options = '') {
+	protected function __construct($shortname, $options = '') {
 		if (!$shortname || !is_string($shortname)) {
 			throw new Exception(get_class($this) . ' requires a non empty string shortname');
 		}
-		if (!elgg_instanceof($entity)) {
-			throw new Exception(get_class($this) . ' requires a valid Elgg entity');
+		if (!elgg_instanceof($this->getEntity())) {
+			throw new Exception(get_class($this) . ' must be instantiated after a new Prototype has been created');
 		}
 
 		$this->shortname = $shortname;
-		$this->entity = $entity;
 		$this->setOptions($options);
+	}
+
+	/**
+	 * Get a prototyped entity
+	 * @return ElggEntity
+	 */
+	public function getEntity() {
+		return Prototype::getEntity();
+	}
+
+	/**
+	 * Get new field instance
+	 * @param string $shortname
+	 * @param array|string $options
+	 * @return \self
+	 */
+	public static function getInstance($shortname, $options = '') {
+		return new self($shortname, $options);
 	}
 
 	/**
@@ -273,8 +284,8 @@ abstract class Field {
 								if (!$o_value) {
 									$o_value = elgg_echo(implode(':', array_filter(array(
 										'option',
-										$this->entity->getType(),
-										$this->entity->getSubtype(),
+										$this->getEntity()->getType(),
+										$this->getEntity()->getSubtype(),
 										$this->getShortname(),
 										$o_key,
 									))));
@@ -304,14 +315,6 @@ abstract class Field {
 	 */
 	public function getShortname() {
 		return $this->shortname;
-	}
-
-	/**
-	 * Get entity
-	 * @return ElggEntity
-	 */
-	public function getEntity() {
-		return $this->entity;
 	}
 
 	/**
@@ -408,8 +411,8 @@ abstract class Field {
 
 		$key = implode(':', array_filter(array(
 			'label',
-			$this->entity->getType(),
-			$this->entity->getSubtype(),
+			$this->getEntity()->getType(),
+			$this->getEntity()->getSubtype(),
 			$this->getShortname()
 		)));
 
@@ -445,8 +448,8 @@ abstract class Field {
 
 		$key = implode(':', array_filter(array(
 			'help',
-			$this->entity->getType(),
-			$this->entity->getSubtype(),
+			$this->getEntity()->getType(),
+			$this->getEntity()->getSubtype(),
 			$this->getShortname()
 		)));
 

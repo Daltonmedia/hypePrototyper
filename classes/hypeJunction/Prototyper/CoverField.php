@@ -6,20 +6,21 @@
 
 namespace hypeJunction\Prototyper;
 
-use ElggEntity;
 use hypeJunction\Filestore\CoverHandler;
 
 class CoverField extends IconField {
 
 	/**
-	 * Construct a new field
+	 * Get new field instance
 	 * @param string $shortname
-	 * @param ElggEntity $entity
-	 * @param array $options
+	 * @param array|string $options
+	 * @return \self
 	 */
-	function __construct($shortname, $entity, $options = '') {
-		parent::__construct($shortname, $entity, $options);
-		$this->data_type = 'cover';
+	public static function getInstance($shortname, $options = '') {
+		$instance = new self($shortname, $options);
+		$instance->data_type = 'cover';
+
+		return $instance;
 	}
 
 	/**

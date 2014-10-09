@@ -17,7 +17,7 @@ class Prototype {
 	 * Entity prototype
 	 * @var ElggEntity
 	 */
-	protected $entity;
+	protected static $entity;
 
 	/**
 	 * Additional params
@@ -80,7 +80,7 @@ class Prototype {
 			throw new Exception(get_class($this) . ' unable to construct a valid Elgg Entity from provided $guid and/or $type/$subtype pair');
 		}
 
-		$this->entity = $entity;
+		self::$entity = $entity;
 		$this->params = $params;
 	}
 
@@ -88,8 +88,8 @@ class Prototype {
 	 * Get prototyped entity
 	 * @return ElggObject|ElggGroup|ElggUser
 	 */
-	public function getEntity() {
-		return $this->entity;
+	public static function getEntity() {
+		return self::$entity;
 	}
 
 	/**
@@ -114,7 +114,7 @@ class Prototype {
 	 * @return Form
 	 */
 	public function form($action) {
-		return new Form($action, $this->getEntity(), $this->params);
+		return Form::getInstance($action, $this->params);
 	}
 
 	/**

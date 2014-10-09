@@ -5,22 +5,21 @@
  */
 namespace hypeJunction\Prototyper;
 
-use ElggEntity;
-
 class AttributeField extends Field {
-
+	
 	/**
-	 * Construct a new field
+	 * Get new field instance
 	 * @param string $shortname
-	 * @param ElggEntity $entity
-	 * @param array $options
+	 * @param array|string $options
+	 * @return \self
 	 */
-	function __construct($shortname, $entity, $options = '') {
-		parent::__construct($shortname, $entity, $options);
-		$this->data_type = 'attribute';
+	public static function getInstance($shortname, $options = '') {
+		$instance = new self($shortname, $options);
+		$instance->data_type = 'attribute';
 		if (!isset($options['output_view'])) {
-			$this->output_view = false;
+			$instance->output_view = false;
 		}
+		return $instance;
 	}
 
 	/**
@@ -119,7 +118,7 @@ class AttributeField extends Field {
 
 		$params = array(
 			'field' => $this,
-			'entity' => $this->entity,
+			'entity' => $this->getEntity(),
 			'attribute_name' => $shortname,
 			'value' => $value,
 			'future_value' => $future_value,
@@ -145,17 +144,17 @@ class AttributeField extends Field {
 			case 'site_guid' :
 			case 'owner_guid' :
 			case 'container_guid' :
-				$this->entity->$shortname = (int) $future_value;
+				$this->getEntity()->$shortname = (int) $future_value;
 				break;
 
 			default :
-				$this->entity->$shortname = $future_value;
+				$this->getEntity()->$shortname = $future_value;
 				break;
 		}
 
 		$params = array(
 			'field' => $this,
-			'entity' => $this->entity,
+			'entity' => $this->getEntity(),
 			'attribute_name' => $shortname,
 			'value' => $future_value,
 			'previous_value' => $value,

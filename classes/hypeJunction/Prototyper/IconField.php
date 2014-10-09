@@ -6,24 +6,25 @@
 
 namespace hypeJunction\Prototyper;
 
-use ElggEntity;
 use hypeJunction\Filestore\IconHandler;
 
 class IconField extends Field {
 
 	/**
-	 * Construct a new field
+	 * Get new field instance
 	 * @param string $shortname
-	 * @param ElggEntity $entity
-	 * @param array $options
+	 * @param array|string $options
+	 * @return \self
 	 */
-	function __construct($shortname, $entity, $options = '') {
-		parent::__construct($shortname, $entity, $options);
-		$this->type = 'file';
-		$this->value_type = 'image';
-		$this->data_type = 'icon';
-		$this->output_view = false;
-		$this->addValidationRule('value_type', 'image');
+	public static function getInstance($shortname, $options = '') {
+		$instance = new self($shortname, $options);
+		$instance->type = 'file';
+		$instance->value_type = 'image';
+		$instance->data_type = 'icon';
+		$instance->output_view = false;
+		$instance->addValidationRule('value_type', 'image');
+
+		return $instance;
 	}
 
 	/**

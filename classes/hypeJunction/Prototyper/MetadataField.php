@@ -6,21 +6,22 @@
 
 namespace hypeJunction\Prototyper;
 
-use ElggEntity;
 use ElggMetadata;
 use stdClass;
 
 class MetadataField extends Field {
 
 	/**
-	 * Construct a new metadata field
+	 * Get new field instance
 	 * @param string $shortname
-	 * @param ElggEntity $entity
-	 * @param array $options
+	 * @param array|string $options
+	 * @return \self
 	 */
-	function __construct($shortname, $entity, $options = '') {
-		parent::__construct($shortname, $entity, $options);
-		$this->data_type = 'metadata';
+	public static function getInstance($shortname, $options = '') {
+		$instance = new self($shortname, $options);
+		$instance->data_type = 'metadata';
+
+		return $instance;
 	}
 
 	/**
@@ -62,9 +63,9 @@ class MetadataField extends Field {
 
 				$values[$i] = $md;
 			}
-		} else if ($this->entity->guid) {
+		} else if ($this->getEntity()->guid) {
 			$values = elgg_get_metadata(array(
-				'guids' => $this->entity->guid,
+				'guids' => $this->getEntity()->guid,
 				'metadata_names' => $this->getShortname(),
 				'limit' => 0,
 			));
@@ -77,7 +78,12 @@ class MetadataField extends Field {
 			$md = new stdClass();
 			$md->id = $values[0]->id;
 			$md->name = $shortname;
-			$md->value = implode(', ', $this->entity->$shortname);
+			$value = $this->getEntity()->$shortname;
+			if (is_array($value)) {
+				$md->value = implode(', ', $value);
+			} else {
+				$md->value = $value;
+			}
 			$md->access_id = $values[0]->access_id;
 			$md->owner_guid = $values[0]->owner_guid;
 			$values = array($md);
@@ -129,7 +135,7 @@ class MetadataField extends Field {
 		$shortname = $this->getShortname();
 
 		$current_metadata = elgg_get_metadata(array(
-			'guids' => $this->entity->guid,
+			'guids' => $this->getEntity()->guid,
 			'metadata_names' => $shortname,
 		));
 
@@ -147,7 +153,7 @@ class MetadataField extends Field {
 
 		$params = array(
 			'field' => $this,
-			'entity' => $this->entity,
+			'entity' => $this->getEntity(),
 			'metadata_name' => $shortname,
 			'value' => $current_metadata,
 			'future_value' => $future_metadata,
@@ -184,7 +190,7 @@ class MetadataField extends Field {
 				if ($id) {
 					update_metadata($id, $name, $value, '', $owner_guid, $access_id);
 				} else {
-					$id = create_metadata($this->entity->guid, $name, $value, '', $owner_guid, $access_id, true);
+					$id = create_metadata($this->getEntity()->guid, $name, $value, '', $owner_guid, $access_id, true);
 				}
 				$ids[] = $id;
 			} else {
@@ -192,14 +198,14 @@ class MetadataField extends Field {
 					elgg_delete_metadata_by_id($id);
 				}
 				foreach ($value as $val) {
-					$ids[] = create_metadata($this->entity->guid, $name, $val, '', $owner_guid, $access_id, true);
+					$ids[] = create_metadata($this->getEntity()->guid, $name, $val, '', $owner_guid, $access_id, true);
 				}
 			}
 		}
 
 		$params = array(
 			'field' => $this,
-			'entity' => $this->entity,
+			'entity' => $this->getEntity(),
 			'metadata_name' => $shortname,
 			'value' => (count($ids)) ? elgg_get_metadata(array('ids' => $ids)) : array(),
 			'previous_value' => $current_metadata,
