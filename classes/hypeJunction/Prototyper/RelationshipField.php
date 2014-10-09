@@ -40,7 +40,7 @@ class RelationshipField extends Field {
 			unset($this->input_vars->bilateral);
 		}
 		if (isset($this->multiple)) {
-			$this->input_vars->multiple = true;
+			$this->input_vars->multiple = $this->multiple;
 		}
 		$this->multiple = false;
 		$this->data_type = 'relationship';
