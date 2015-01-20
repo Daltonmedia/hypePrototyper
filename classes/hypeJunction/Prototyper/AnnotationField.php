@@ -51,7 +51,7 @@ class AnnotationField extends Field {
 		$sticky = $this->getStickyValue();
 		if (!$sticky) {
 			$values = elgg_get_annotations(array(
-				'guids' => $this->getEntity()->guid,
+				'guids' => sanitize_int($this->getEntity()->guid),
 				'annotation_names' => $this->getShortname(),
 				'limit' => 0,
 			));
