@@ -23,6 +23,8 @@ if (!elgg_view_exists($view)) {
 $type = $field->getType();
 $class = $field->getMicroformat();
 
+$vars = array_merge($field->getInputVars(), $vars);
+
 $metadata = $field->getValues();
 
 if (count($metadata) > 1) {

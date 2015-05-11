@@ -24,13 +24,15 @@ class RelationshipField extends Field {
 	protected $bilateral = false;
 
 	/**
-	 * Get new field instance
-	 * @param string $shortname
-	 * @param array|string $options
-	 * @return \self
+	 * {@inheritdoc}
 	 */
-	public static function getInstance($shortname, $options = '') {
-		$instance = new self($shortname, $options);
+	public static function factory($options = array(), $entity = null) {
+		$shortname = elgg_extract('shortname', $options);
+
+		$instance = new self($shortname);
+		$instance->setEntity($entity);
+		$instance->setOptions($options);
+
 		if (isset($instance->input_vars->inverse_relationship)) {
 			$instance->inverse_relationship = $instance->input_vars->inverse_relationship;
 			unset($instance->input_vars->inverse_relationship);
@@ -62,7 +64,7 @@ class RelationshipField extends Field {
 	 * @param array $vars
 	 * @return string
 	 */
-	function viewInput($vars = array()) {
+	public function viewInput($vars = array()) {
 		$vars['field'] = $this;
 		return elgg_view('forms/prototyper/relationship', $vars);
 	}
@@ -72,7 +74,7 @@ class RelationshipField extends Field {
 	 * @param array $vars
 	 * @return string
 	 */
-	function viewOutput($vars = array()) {
+	public function viewOutput($vars = array()) {
 		$vars['field'] = $this;
 		return elgg_view('output/prototyper/relationship', $vars);
 	}

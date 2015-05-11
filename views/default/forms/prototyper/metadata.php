@@ -3,6 +3,7 @@
 namespace hypeJunction\Prototyper;
 
 $field = elgg_extract('field', $vars);
+$index = elgg_extract('index', $vars, '');
 
 if (!$field instanceof MetadataField) {
 	return true;
@@ -21,6 +22,7 @@ $label = $field->getLabel();
 $help = $field->getHelp();
 $required = $field->isRequired();
 $multiple = $field->isMultiple();
+$type = $field->getType();
 
 if ($required) {
 	$label_attrs = elgg_format_attributes(array(
@@ -33,20 +35,20 @@ $metadata = $field->getValues();
 
 foreach ($metadata as $md) {
 	$hidden = elgg_view('input/hidden', array(
-		'name' => "{$name}[id][]",
+		'name' => "{$name}[id][{$index}]",
 		'value' => $md->id,
 		'data-reset' => true,
 	));
 	$hidden .= elgg_view('input/hidden', array(
-		'name' => "{$name}[name][]",
+		'name' => "{$name}[name][{$index}]",
 		'value' => ($md->name) ? $md->name : $name,
 	));
 	$hidden .= elgg_view('input/hidden', array(
-		'name' => "{$name}[owner_guid][]",
+		'name' => "{$name}[owner_guid][{$index}]",
 		'value' => ($md->owner_guid) ? $md->owner_guid : elgg_get_logged_in_user_guid(),
 	));
 	$input_vars = $field->getInputVars();
-	$input_vars['name'] = "{$name}[value][]";
+	$input_vars['name'] = "{$name}[value][{$index}]";
 	if ($md->id) {
 		$input_vars['value'] = $md->value;
 	}
@@ -72,7 +74,7 @@ foreach ($metadata as $md) {
 		}
 	}
 	$access .= elgg_view("input/$access_type", array(
-		'name' => "{$name}[access_id][]",
+		'name' => "{$name}[access_id][{$index}]",
 		'value' => $access_id,
 	));
 

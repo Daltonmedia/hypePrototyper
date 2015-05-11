@@ -3,21 +3,25 @@
 /**
  * Handle annotation fields
  */
+
 namespace hypeJunction\Prototyper;
 
 use ElggAnnotation;
+use ElggEntity;
 use stdClass;
 
 class AnnotationField extends Field {
 
 	/**
-	 * Get new field instance
-	 * @param string $shortname
-	 * @param array|string $options
-	 * @return \self
+	 * {@inheritdoc}
 	 */
-	public static function getInstance($shortname, $options = '') {
-		$instance = new self($shortname, $options);
+	public static function factory($options = array(), $entity = null) {
+		$shortname = elgg_extract('shortname', $options);
+
+		$instance = new self($shortname);
+		$instance->setEntity($entity);
+		$instance->setOptions($options);
+
 		$instance->data_type = 'annotation';
 
 		return $instance;
@@ -28,7 +32,7 @@ class AnnotationField extends Field {
 	 * @param array $vars
 	 * @return string
 	 */
-	function viewInput($vars = array()) {
+	public function viewInput($vars = array()) {
 		$vars['field'] = $this;
 		return elgg_view('forms/prototyper/annotation', $vars);
 	}
@@ -38,7 +42,7 @@ class AnnotationField extends Field {
 	 * @param array $vars
 	 * @return string
 	 */
-	function viewOutput($vars = array()) {
+	public function viewOutput($vars = array()) {
 		$vars['field'] = $this;
 		return elgg_view('output/prototyper/annotation', $vars);
 	}
@@ -155,9 +159,10 @@ class AnnotationField extends Field {
 		}
 
 		$entries = count($future_annotation['value']);
+		$keys = array_keys($future_annotation['name']);
 
 		$ids = array();
-		for ($i = 0; $i < $entries; $i++) {
+		foreach ($keys as $i) {
 
 			$id = $future_annotation['id'][$i];
 			$name = $future_annotation['name'][$i];
@@ -192,6 +197,5 @@ class AnnotationField extends Field {
 
 		return elgg_trigger_plugin_hook('handle:annotation:after', 'prototyper', $params, true);
 	}
-
 
 }

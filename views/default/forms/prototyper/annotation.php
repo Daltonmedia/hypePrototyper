@@ -3,6 +3,7 @@
 namespace hypeJunction\Prototyper;
 
 $field = elgg_extract('field', $vars);
+$index = elgg_extract('index', $vars, '');
 
 if (!$field instanceof AnnotationField) {
 	return true;
@@ -33,20 +34,20 @@ $annotations = $field->getValues();
 
 foreach ($annotations as $ann) {
 	$hidden = elgg_view('input/hidden', array(
-		'name' => "{$name}[id][]",
+		'name' => "{$name}[id][{$index}]",
 		'value' => $ann->id,
 		'data-reset' => true,
 	));
 	$hidden .= elgg_view('input/hidden', array(
-		'name' => "{$name}[name][]",
+		'name' => "{$name}[name][{$index}]",
 		'value' => ($ann->name) ? $ann->name : $name,
 	));
 	$hidden .= elgg_view('input/hidden', array(
-		'name' => "{$name}[owner_guid][]",
+		'name' => "{$name}[owner_guid][{$index}]",
 		'value' => ($ann->owner_guid) ? $ann->owner_guid : elgg_get_logged_in_user_guid(),
 	));
 	$input_vars = $field->getInputVars();
-	$input_vars['name'] = "{$name}[value][]";
+	$input_vars['name'] = "{$name}[value][{$index}]";
 	if ($ann->id) {
 		$input_vars['value'] = $ann->value;
 	}
@@ -72,7 +73,7 @@ foreach ($annotations as $ann) {
 		}
 	}
 	$access .= elgg_view("input/$access_type", array(
-		'name' => "{$name}[access_id][]",
+		'name' => "{$name}[access_id][{$index}]",
 		'value' => $access_id,
 	));
 

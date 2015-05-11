@@ -19,6 +19,8 @@ $label = $field->getLabel();
 $view = $field->getOutputView();
 $class = $field->getMicroformat();
 
+$vars = array_merge($field->getInputVars(), $vars);
+
 $annotations = $field->getValues();
 
 if (empty($annotations)) {

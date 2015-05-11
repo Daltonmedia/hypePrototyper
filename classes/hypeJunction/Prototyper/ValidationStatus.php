@@ -7,11 +7,11 @@ class ValidationStatus {
 	protected $status;
 	protected $messages = array();
 
-	function __construct($status = true, $messages = array()) {
+	public function __construct($status = true, $messages = array()) {
 		$this->status = (bool) $status;
 		$this->messages = (is_array($messages)) ? $messages : array();
 	}
-	
+
 	private function setStatus($status = true) {
 		$this->status = $status;
 	}

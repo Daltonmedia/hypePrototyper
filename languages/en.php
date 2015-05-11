@@ -16,9 +16,13 @@ $english = array(
 	'prototyper:validate:error:minlength' => 'Field %s can not be shorter than %s characters',
 	'prototyper:validate:error:maxlength' => 'Field %s can not be longer than %s characters',
 	'prototyper:handle:error' => 'Submission failed with the following error: %s',
+	'prototyper:io:error' => 'An error has occurred. It is likely that you do not have sufficient permissions for this action',
+	'prototyper:action:error' => 'Requested action could not be successfully completed',
+	'prototyper:action:success' => 'Requested action was successfully completed',
+
+	'prototyper:settings:default_language' => 'Default language',
+
 	
-	'prototyper:action:error' => 'Action could not be successfully completed',
-	'prototyper:action:success' => 'Action was successful',
 );
 
 add_translation('en', $english);

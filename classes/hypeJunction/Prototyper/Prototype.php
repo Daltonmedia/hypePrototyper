@@ -1,219 +1,337 @@
 <?php
 
-/**
- * Constructs a new entity prototype for use with forms and fields
- */
 namespace hypeJunction\Prototyper;
 
 use ElggEntity;
-use ElggGroup;
-use ElggObject;
-use ElggUser;
-use Exception;
 
-class Prototype {
+abstract class Prototype {
+
+	const CONTEXT_ACTION = 'action';
+	const CONTEXT_FORM = 'form';
+	const CONTEXT_PROFILE = 'profile';
 
 	/**
-	 * Entity prototype
-	 * @var ElggEntity
+	 * Attributes of an entity
+	 * @var array 
 	 */
-	protected static $entity;
+	protected $attributes = array();
+
+	/**
+	 * Entity
+	 * @var Entity
+	 */
+	protected $entity;
+
+	/**
+	 * Registered action name
+	 * @var string
+	 */
+	protected $action;
 
 	/**
 	 * Additional params
 	 * @var array 
 	 */
-	protected $params;
+	protected $params = array();
 
 	/**
-	 * Construct a new prototype
-	 * Either GUID or type/subtype pair is required
-	 *
-	 * @param integer $guid		GUID of an existing entity to load or an existing entity
-	 * @param array $attributes	Attributes of an entity to construct for new entities
-	 * @param array $params		Additional params to pass to the hook
-	 * @throws Exception
+	 * Fields
+	 * @var array
 	 */
-	public function __construct($guid = null, array $attributes = array(), $params = array()) {
+	protected $fields = array();
 
-		if ($guid) {
-			if (elgg_instanceof($guid)) {
-				$entity = $guid;
-			} else {
-				$entity = get_entity($guid);
-			}
-		} else {
-			$type = elgg_extract('type', $attributes, 'object');
-			$subtype = elgg_extract('subtype', $attributes, ELGG_ENTITIES_ANY_VALUE);
-			unset($attributes['type']);
-			unset($attributes['subtype']);
+	/**
+	 * Callback function to filter fields
+	 * @var mixed
+	 */
+	protected $filter;
 
-			$class = get_subtype_class($type, $subtype);
-			if (class_exists($class)) {
-				$entity = new $class();
-			} else {
-				switch ($type) {
-					case 'object' :
-						$entity = new ElggObject();
-						$entity->subtype = $subtype;
-						break;
+	/**
+	 * Constructor
+	 *
+	 * @param string $action     Registered action name
+	 * @param array  $attributes Attributes, include type and subtype
+	 */
+	public function __construct($action = '', $attributes = array()) {
+		$this->action = $action;
+		$this->attributes = $attributes;
+	}
 
-					case 'user' :
-						$entity = new ElggUser();
-						$entity->subtype = $subtype;
-						break;
+	/**
+	 * Returns current context
+	 * @return string Enumeration of "action", "form" or "profile"
+	 */
+	abstract function getHandler();
 
-					case 'group' :
-						$entity = new ElggGroup();
-						$entity->subtype = $subtype;
-						break;
-				}
-			}
-			foreach ($attributes as $key => $value) {
-				if (in_array($key, self::getAttributeNames($entity))) {
-					$entity->$key = $value;
-				}
-			}
+	/**
+	 * Sets an action
+	 * 
+	 * @param string $action Action name
+	 * @return self
+	 */
+	public function setAction($action = '') {
+		$this->action = $action;
+	}
+
+	/**
+	 * Returns action name
+	 * @return string
+	 */
+	public function getAction() {
+		return $this->action;
+	}
+
+	/**
+	 * Sets an existing entity
+	 *
+	 * @param mixed $entity Entity or guid
+	 * @return self
+	 */
+	public function setEntity($entity = null) {
+		$this->entity = $entity;
+	}
+
+	/**
+	 * Returns an entity
+	 * @return ElggEntity
+	 */
+	public function getEntity() {
+		if (!$this->entity instanceof ElggEntity) {
+			$this->entity = Entity::factory($this->entity, $this->attributes);
 		}
+		return $this->entity;
+	}
 
-		if (!elgg_instanceof($entity)) {
-			throw new Exception(get_class($this) . ' unable to construct a valid Elgg Entity from provided $guid and/or $type/$subtype pair');
-		}
-
-		self::$entity = $entity;
+	/**
+	 * Sets handler params
+	 * 
+	 * @param array $params Params
+	 * @return self
+	 */
+	public function setParams(array $params = array()) {
 		$this->params = $params;
 	}
 
 	/**
-	 * Get prototyped entity
-	 * @return ElggObject|ElggGroup|ElggUser
+	 * Returns handler params
+	 * @return type
 	 */
-	public static function getEntity() {
-		return self::$entity;
+	public function getParams() {
+		return (is_array($this->params)) ? $this->params : array();
 	}
 
 	/**
-	 * Get entity type
-	 * @return string
+	 * Adds a callback for filtering fields
+	 *
+	 * @param mixed $callable Callback function used as argument for array_filter()
+	 * @return self
 	 */
-	public function getType() {
-		return $this->getEntity()->getType();
+	public function setFilter($callable) {
+		$this->filter = $callable;
+		return self;
 	}
 
 	/**
-	 * Get entity subtype
-	 * @return string
+	 * Removess the filter
+	 * @return self
 	 */
-	public function getSubtype() {
-		return $this->getEntity()->getSubtype();
+	public function removeFilter() {
+		unset($this->filter);
+		return $this;
 	}
 
 	/**
-	 * Build a new form for a given action
-	 * @param string $action
+	 * Get form fields
+	 * @return Field[]
+	 */
+	public function getFields() {
+		$params = $this->getParams();
+		$params['entity'] = $this->getEntity();
+		$params['context'] = $this->getHandler();
+
+		$fields = elgg_trigger_plugin_hook('prototype', $this->action, $params, array());
+
+		$this->setFields($fields);
+		$this->setAttributeFields();
+		$this->filterFields();
+		$this->sortFields();
+
+		return $this->fields;
+	}
+
+	/**
+	 * Adds a field to a form
+	 *
+	 * @param array  $options Field options
+	 * @return Field
+	 */
+	public function addField($options = array()) {
+		$field = Field::factory($options, $this->getEntity());
+		if ($this->hasField($options['shortname'])) {
+			$this->removeField($options['shortname']);
+		}
+		$this->fields[] = $field;
+		return $field;
+	}
+
+	/**
+	 * Removes a field from a from
+	 *
+	 * @param string $shortname Field name
+	 * @return self
+	 */
+	public function removeField($shortname) {
+		foreach ($this->fields as $key => $field) {
+			if ($field instanceof Field && $field->getShortname() == $shortname) {
+				unset($this->fields[$key]);
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * Checks if the form has a field
+	 *
+	 * @param string $shortname Field name
+	 * @return bool
+	 */
+	public function hasField($shortname = '') {
+		foreach ($this->fields as $field) {
+			if ($field instanceof Field && $field->getShortname() == $shortname) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Store submitted sticky values
+	 * @return bool
+	 */
+	public function saveStickyValues() {
+		return elgg_make_sticky_form($this->getAction());
+	}
+
+	/**
+	 * Clear sticky values
+	 * @return type
+	 */
+	public function clearStickyValues() {
+		return elgg_clear_sticky_form($this->getAction());
+	}
+
+	/**
+	 * Get sticky values
+	 * @return type
+	 */
+	public function getStickyValues() {
+		return elgg_get_sticky_values($this->getAction());
+	}
+
+	/**
+	 * Get form validation status
+	 * @return type
+	 */
+	public function getValidationStatus() {
+
+		$validation_status = null;
+
+		if (isset($_SESSION['prototyper_validation'][$this->action])) {
+			$validation_status = $_SESSION['prototyper_validation'][$this->action];
+		}
+
+		return $validation_status;
+	}
+
+	/**
+	 * Save validation status of the field
+	 * @param string $shortname
+	 * @param ValidationStatus $validation
+	 * @return void
+	 */
+	public function setFieldValidationStatus($shortname, ValidationStatus $validation) {
+
+		if (!isset($_SESSION['prototyper_validation'][$this->action])) {
+			$_SESSION['prototyper_validation'][$this->action] = array();
+		}
+
+		$_SESSION['prototyper_validation'][$this->action][$shortname] = array(
+			'status' => $validation->getStatus(),
+			'messages' => $validation->getMessages()
+		);
+	}
+
+	/**
+	 * Clear form validation
+	 * @return void
+	 */
+	public function clearValidationStatus() {
+
+		if (isset($_SESSION['prototyper_validation'][$this->action])) {
+			unset($_SESSION['prototyper_validation'][$this->action]);
+		}
+	}
+
+	/**
+	 * Sets entity attribute fields
+	 * @return self
+	 */
+	protected function setAttributeFields() {
+		$attributes = Entity::getAttributeNames($this->getEntity());
+		foreach ($attributes as $shortname) {
+			if (!$this->hasField($shortname)) {
+				$this->addField(array(
+					'shortname' => $shortname,
+					'type' => 'hidden',
+					'priority' => 1,
+				));
+			}
+		}
+	}
+
+	/**
+	 * Set form fields
+	 *
+	 * @param array $fields
 	 * @return Form
 	 */
-	public function form($action) {
-		return Form::getInstance($action, $this->params);
+	protected function setFields(array $fields = array()) {
+
+		foreach ($fields as $shortname => $field) {
+			if (!isset($field['shortname'])) {
+				$field['shortname'] = $shortname;
+			}
+			$this->addField($field);
+		}
+		return $this;
 	}
 
 	/**
-	 * Logic to apply in the action
-	 * Validates and handles values supplied via the form and applies them to the entity
-	 * @param string $action
-	 * @param boolean $forward
-	 * @return boolean|void		Returns TRUE|FALSE if $forward is set to true, otherwise points the header to a new location
+	 * Filters fields using set filters
+	 * @return self
 	 */
-	public function action($action, $forward = false) {
-		$form = $this->form($action);
-		$form->saveStickyValues();
-		
-		if ($form->validate() === false) {
-			register_error(elgg_echo('prototyper:validate:error'));
-			forward(REFERER);
-		}
+	protected function filterFields() {
 
-		$result = $form->handle();
-		if ($result) {
-			system_message(elgg_echo('prototyper:action:success'));
-			$forward_url = $form->getEntity()->getURL();
-		} else {
-			register_error(elgg_echo('prototyper:action:error'));
-			$forward_url = REFERER;
+		if (is_callable($this->filter)) {
+			$this->fields = array_filter($this->fields, $this->filter);
 		}
-		
-		$form->clearStickyValues();
-
-		if (!$forward) {
-			return $result;
-		}
-
-		if ($forward === true) {
-			forward($forward_url);
-		}
-
-		forward($forward);
-		
+		return $this;
 	}
 
-	function profile($action, $params = array()) {
-		$form = $this->form($action);
-		return $form->viewProfile($params);
-	}
 	/**
-	 * Get names of attributes for the entity
-	 * @param ElggEntity $entity
-	 * @return array
+	 * Sort fields by priority
+	 * @return self
 	 */
-	static function getAttributeNames($entity) {
-		if (!elgg_instanceof($entity)) {
-			return array();
-		}
-
-		$default = array(
-			'guid',
-			'type',
-			'subtype',
-			'owner_guid',
-			'container_guid',
-			'site_guid',
-			'access_id',
-			'time_created',
-			'time_updated',
-			'last_action',
-			'enabled',
-		);
-
-		switch ($entity->getType()) {
-			case 'user';
-				$attributes = array(
-					'name',
-					'username',
-					'email',
-					'language',
-					'banned',
-					'admin',
-					'password',
-					'salt'
-				);
-				break;
-
-			case 'group' :
-				$attributes = array(
-					'name',
-					'description',
-				);
-				break;
-
-			case 'object' :
-				$attributes = array(
-					'title',
-					'description',
-				);
-				break;
-		}
-
-		return array_merge($default, $attributes);
+	protected function sortFields() {
+		uasort($this->fields, function($a, $b) {
+			$priority_a = (int) $a->get('priority') ? : 500;
+			$priority_b = (int) $b->get('priority') ? : 500;
+			if ($priority_a == $priority_b) {
+				return 0;
+			}
+			return ($priority_a < $priority_b) ? -1 : 1;
+		});
+		return $this;
 	}
 
 }

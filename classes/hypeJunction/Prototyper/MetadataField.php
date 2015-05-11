@@ -12,13 +12,15 @@ use stdClass;
 class MetadataField extends Field {
 
 	/**
-	 * Get new field instance
-	 * @param string $shortname
-	 * @param array|string $options
-	 * @return \self
+	 * {@inheritdoc}
 	 */
-	public static function getInstance($shortname, $options = '') {
-		$instance = new self($shortname, $options);
+	public static function factory($options = array(), $entity = null) {
+		$shortname = elgg_extract('shortname', $options);
+
+		$instance = new self($shortname);
+		$instance->setEntity($entity);
+		$instance->setOptions($options);
+
 		$instance->data_type = 'metadata';
 
 		return $instance;
@@ -29,7 +31,7 @@ class MetadataField extends Field {
 	 * @param array $vars
 	 * @return string
 	 */
-	function viewInput($vars = array()) {
+	public function viewInput($vars = array()) {
 		$vars['field'] = $this;
 		return elgg_view('forms/prototyper/metadata', $vars);
 	}
@@ -39,7 +41,7 @@ class MetadataField extends Field {
 	 * @param array $vars
 	 * @return string
 	 */
-	function viewOutput($vars = array()) {
+	public function viewOutput($vars = array()) {
 		$vars['field'] = $this;
 		return elgg_view('output/prototyper/metadata', $vars);
 	}
@@ -65,7 +67,7 @@ class MetadataField extends Field {
 			}
 		} else if ($this->getEntity()->guid) {
 			$values = elgg_get_metadata(array(
-				'guids' => $this->getEntity()->guid,
+				'guids' => (int) $this->getEntity()->guid,
 				'metadata_names' => $this->getShortname(),
 				'limit' => 0,
 			));
@@ -73,7 +75,7 @@ class MetadataField extends Field {
 
 		if (!is_array($values) || !count($values)) {
 			$values = array(new ElggMetadata);
-		} else if ($this->getValueType() == 'tags' && !$this->isMultiple()) {
+		} else if (($this->getValueType() == 'tags' || is_array($values)) && !$this->isMultiple()) {
 			$shortname = $this->getShortname();
 			$md = new stdClass();
 			$md->id = $values[0]->id;
@@ -87,8 +89,21 @@ class MetadataField extends Field {
 			$md->access_id = $values[0]->access_id;
 			$md->owner_guid = $values[0]->owner_guid;
 			$values = array($md);
+		} else if (in_array($this->getValueType(), array('checkboxes', 'radio'))) {
+			$shortname = $this->getShortname();
+			$md = new stdClass();
+			$md->id = $values[0]->id;
+			$md->name = $shortname;
+			$value = $this->getEntity()->$shortname;
+			if (is_array($value)) {
+				$md->value = $value;
+			} else {
+				$md->value = array($value);
+			}
+			$md->access_id = $values[0]->access_id;
+			$md->owner_guid = $values[0]->owner_guid;
+			$values = array($md);
 		}
-
 		return $values;
 	}
 
@@ -135,7 +150,7 @@ class MetadataField extends Field {
 		$shortname = $this->getShortname();
 
 		$current_metadata = elgg_get_metadata(array(
-			'guids' => $this->getEntity()->guid,
+			'guids' => (int) $this->getEntity()->guid,
 			'metadata_names' => $shortname,
 		));
 
@@ -166,16 +181,16 @@ class MetadataField extends Field {
 
 		$future_metadata_ids = elgg_extract('id', $future_metadata, array());
 
-
 		$to_delete = array_diff($current_metadata_ids, $future_metadata_ids);
 		foreach ($to_delete as $id) {
 			elgg_delete_metadata_by_id($id);
 		}
 
 		$entries = count($future_metadata['value']);
+		$keys = array_keys($future_metadata['name']);
 
 		$ids = array();
-		for ($i = 0; $i < $entries; $i++) {
+		foreach ($keys as $i) {
 
 			$id = $future_metadata['id'][$i];
 			$name = $future_metadata['name'][$i];
@@ -207,10 +222,10 @@ class MetadataField extends Field {
 			'field' => $this,
 			'entity' => $this->getEntity(),
 			'metadata_name' => $shortname,
-			'value' => (count($ids)) ? elgg_get_metadata(array('ids' => $ids)) : array(),
+			'value' => (count($ids)) ? elgg_get_metadata(array('metadata_ids' => $ids)) : array(),
 			'previous_value' => $current_metadata,
 		);
-
+		
 		return elgg_trigger_plugin_hook('handle:metadata:after', 'prototyper', $params, true);
 	}
 

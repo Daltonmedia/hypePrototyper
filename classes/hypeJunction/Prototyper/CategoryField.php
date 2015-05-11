@@ -11,14 +11,16 @@ use stdClass;
 
 class CategoryField extends RelationshipField {
 
-		/**
-	 * Get new field instance
-	 * @param string $shortname
-	 * @param array|string $options
-	 * @return \self
+	/**
+	 * {@inheritdoc}
 	 */
-	public static function getInstance($shortname, $options = '') {
-		$instance = new self($shortname, $options);
+	public static function factory($options = array(), $entity = null) {
+		$shortname = elgg_extract('shortname', $options);
+
+		$instance = new self($shortname);
+		$instance->setEntity($entity);
+		$instance->setOptions($options);
+
 		$instance->inverse_relationship = true;
 		$instance->belateral = false;
 		if (isset($instance->multiple)) {
@@ -44,7 +46,7 @@ class CategoryField extends RelationshipField {
 	 * @param array $vars
 	 * @return string
 	 */
-	function viewInput($vars = array()) {
+	public function viewInput($vars = array()) {
 		$vars['field'] = $this;
 		return elgg_view('forms/prototyper/category', $vars);
 	}
@@ -54,7 +56,7 @@ class CategoryField extends RelationshipField {
 	 * @param array $vars
 	 * @return string
 	 */
-	function viewOutput($vars = array()) {
+	public function viewOutput($vars = array()) {
 		$vars['field'] = $this;
 		return elgg_view('output/prototyper/category', $vars);
 	}

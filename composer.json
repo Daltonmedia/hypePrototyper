@@ -10,25 +10,27 @@
 	"authors": [
 		{
 			"name": "Ismayil Khayredinov",
-			"email": "ismayil.khayredinov@gmail.com"
+			"email": "ismayil@hypejunction.com"
 		}
 	],
 	"extra": {
 		"installer-name": "hypePrototyper"
 	},
-	"config": {
-		"vendor-dir": "vendors",
-		"preferred-install": "dist"
-	},
 	"require": {
 		"php": ">=5.3.3",
-		"composer/installers": ">=1.0.8",
-		"smottt/wideimage": "dev-master",
-		"hypejunction/cmp-filestore": "dev-master"
+		"ext-json": "*",
+		"ext-xml": "*",
+		"ext-curl": "*",
+		"composer/installers": "1.*"
 	},
 	"autoload": {
-		"psr-4": {
-			"hypeJunction\\": "classes/hypeJunction/"
+		"psr-0": {
+			"": "classes/"
+		}
+	},
+	"autoload-dev": {
+		"psr-0": {
+			"": "tests/phpunit/"
 		}
 	}
 }

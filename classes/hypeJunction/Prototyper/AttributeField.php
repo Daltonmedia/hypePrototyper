@@ -3,22 +3,26 @@
 /**
  * Handling of entity attribute fields
  */
+
 namespace hypeJunction\Prototyper;
 
 class AttributeField extends Field {
-	
+
 	/**
-	 * Get new field instance
-	 * @param string $shortname
-	 * @param array|string $options
-	 * @return \self
+	 * {@inheritdoc}
 	 */
-	public static function getInstance($shortname, $options = '') {
-		$instance = new self($shortname, $options);
+	public static function factory($options = array(), $entity = null) {
+		$shortname = elgg_extract('shortname', $options);
+
+		$instance = new self($shortname);
+		$instance->setEntity($entity);
+		$instance->setOptions($options);
+
 		$instance->data_type = 'attribute';
 		if (!isset($options['output_view'])) {
 			$instance->output_view = false;
 		}
+
 		return $instance;
 	}
 

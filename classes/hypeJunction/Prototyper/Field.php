@@ -8,9 +8,16 @@ namespace hypeJunction\Prototyper;
 
 use ElggEntity;
 use Exception;
+use InvalidArgumentException;
 use stdClass;
 
 abstract class Field {
+
+	/**
+	 * Entity
+	 * @var ElggEntity 
+	 */
+	protected $entity;
 
 	/**
 	 * Short name of the field (used as metadata or annotation or relationship name)
@@ -109,22 +116,40 @@ abstract class Field {
 	protected $validation_rules = array();
 
 	/**
+	 * Order of the field
+	 * @var int
+	 */
+	protected $priority = 500;
+
+	/**
+	 * Flags used for filtering
+	 * @var array
+	 */
+	protected $flags = array();
+
+	/**
 	 * Construct a new field
 	 *
-	 * @param string $shortname
-	 * @param array $options
-	 * @throws Exception
+	 * @param string     $shortname Field id
+	 * @throws InvalidArgumentException
 	 */
-	protected function __construct($shortname, $options = '') {
+	protected function __construct($shortname) {
 		if (!$shortname || !is_string($shortname)) {
-			throw new Exception(get_class($this) . ' requires a non empty string shortname');
-		}
-		if (!elgg_instanceof($this->getEntity())) {
-			throw new Exception(get_class($this) . ' must be instantiated after a new Prototype has been created');
+			throw new InvalidArgumentException(get_class($this) . ' requires a non empty string shortname');
 		}
 
 		$this->shortname = $shortname;
-		$this->setOptions($options);
+	}
+
+	/**
+	 * Sets an entity
+	 * 
+	 * @param ElggEntity $entity
+	 * @return self
+	 */
+	public function setEntity(\ElggEntity $entity) {
+		$this->entity = $entity;
+		return self;
 	}
 
 	/**
@@ -132,17 +157,75 @@ abstract class Field {
 	 * @return ElggEntity
 	 */
 	public function getEntity() {
-		return Prototype::getEntity();
+		return $this->entity;
 	}
 
 	/**
-	 * Get new field instance
-	 * @param string $shortname
-	 * @param array|string $options
-	 * @return \self
+	 * Constructs a new field object
+	 *
+	 * @param array      $options Field options
+	 * @param ElggEntity $entity  Entity
+	 * @return boolean
 	 */
-	public static function getInstance($shortname, $options = '') {
-		return new self($shortname, $options);
+	public static function factory($options = array(), $entity = null) {
+
+		if (empty($options)) {
+			$options = array();
+		}
+
+		$shortname = elgg_extract('shortname', $options);
+
+		$data_type = 'metadata';
+		if (is_array($options)) {
+			$data_type = elgg_extract('data_type', $options, 'metadata');
+		}
+
+		try {
+
+			switch ($data_type) {
+
+				default :
+					$class_name = elgg_extract('class_name', $options);
+					if (class_exists($class_name)) {
+						$field = $class_name::factory($options, $entity);
+					}
+					break;
+
+				case 'attribute' :
+				case 'metadata' :
+					if (in_array($shortname, Entity::getAttributeNames($entity))) {
+						$field = AttributeField::factory($options, $entity);
+					} else {
+						$field = MetadataField::factory($options, $entity);
+					}
+					break;
+
+				case 'annotation' :
+					$field = AnnotationField::factory($options, $entity);
+					break;
+
+				case 'relationship' :
+					$field = RelationshipField::factory($options, $entity);
+					break;
+
+				case 'category' :
+					$field = CategoryField::factory($options, $entity);
+					break;
+
+				case 'icon' :
+					$field = IconField::factory($options, $entity);
+					break;
+
+				case 'cover' :
+					$field = CoverField::factory($options, $entity);
+					break;
+			}
+		} catch (Exception $ex) {
+			elgg_log($ex->getMessage(), 'ERROR');
+			return false;
+		}
+
+		return $field;
 	}
 
 	/**
@@ -201,7 +284,7 @@ abstract class Field {
 
 		$this->input_vars = new stdClass();
 		foreach ($options as $key => $value) {
-
+			
 			switch ($key) {
 
 				default :
@@ -254,6 +337,10 @@ abstract class Field {
 					$this->multiple = $value;
 					break;
 
+				case 'priority' :
+					$this->priority = $value ? (int) $value : 500;
+					break;
+
 				case 'validation_rules' :
 					if (!is_array($value)) {
 						elgg_log('validation_rules property in ' . get_class($this) . ' should be set as array');
@@ -302,6 +389,13 @@ abstract class Field {
 						$this->input_vars->options = $inverse_options;
 					}
 					$this->input_vars->options_values = $options_values;
+					break;
+
+				case 'flags' :
+					if (is_string($value)) {
+						$value = string_to_tag_array($value);
+					}
+					$this->flags = $value;
 					break;
 			}
 		}
@@ -387,7 +481,7 @@ abstract class Field {
 	 * @return array
 	 */
 	public function getInputVars() {
-		$this->input_vars->entity = $this->getEntity();
+		$this->input_vars->entity = ($this->getEntity()->guid) ? $this->getEntity() : null;
 		$this->input_vars->required = $this->isRequired();
 		return (array) $this->input_vars;
 	}
@@ -433,8 +527,7 @@ abstract class Field {
 		} else if (is_array($this->label)) {
 			$translation = elgg_extract($lang, $this->label);
 		}
-
-
+		
 		return ($translation) ? $translation : elgg_echo($key, array(), $lang);
 	}
 
@@ -703,4 +796,11 @@ abstract class Field {
 		return implode(' ', array_unique($classes));
 	}
 
+	/**
+	 * Returns field flags
+	 * @return array
+	 */
+	public function getFlags() {
+		return (is_array($this->flags)) ? $this->flags : array();
+	}
 }
