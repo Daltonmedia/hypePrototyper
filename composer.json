@@ -1,0 +1,29 @@
+{
+	"name": "hypejunction/hypeprototyper",
+	"type": "elgg-plugin",
+	"description": "Entity prototyping",
+	"homepage": "http://hypejunction.com",
+	"keywords": [
+		"elgg", "plugin", "prototypes", "forms"
+	],
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Ismayil Khayredinov",
+			"email": "ismayil@hypejunction.com"
+		}
+	],
+	"extra": {
+		"installer-name": "hypePrototyper"
+	},
+	"require": {
+		"php": ">=5.4",
+		"composer/installers": "1.*"
+	},
+	"autoload": {
+		"psr-0": {
+			"": "classes/"
+		}
+	}
+}
+
