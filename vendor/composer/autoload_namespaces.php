@@ -7,5 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\Installers\\' => array($vendorDir . '/composer/installers/src'),
-    '' => array($baseDir . '/classes', $baseDir . '/tests/phpunit'),
+    '' => array($baseDir . '/classes'),
 );

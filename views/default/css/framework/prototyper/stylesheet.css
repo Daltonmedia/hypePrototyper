@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .prototyper-col-1 {
   margin-bottom: 10px;
 }
@@ -369,8 +370,8 @@
   clear: both;
 }
 .prototyper-row [class*="prototyper-col"] {
-  -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
 
@@ -378,12 +379,9 @@
   font-size: 13px;
 }
 .prototyper-fieldset * {
-  -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
   box-sizing: border-box;
-}
-form .prototyper-fieldset {
-  margin-bottom: 20px;
 }
 .prototyper-fieldset.has-legend {
   padding: 15px;
@@ -420,59 +418,8 @@ form .prototyper-fieldset {
 .prototyper-fieldset label {
   display: inline-block;
 }
-.prototyper-fieldset .prototyper-help {
-  margin: 0 5px;
-  display: inline-block;
-  position: relative;
-  cursor: help;
-}
-.prototyper-fieldset .prototyper-help .prototyper-help-text {
-  width: 325px;
-  border: 2px solid #dddddd;
-  margin-top: 10px;
-  margin-left: -13px;
-  position: absolute;
-  background: white;
-  margin-left: -85px;
-  padding: 5px;
-  display: none;
-}
-.prototyper-fieldset .prototyper-help .prototyper-help-text:before {
-  content: "";
-  width: 0px;
-  height: 0px;
-  border-style: solid;
-  border-width: 0 10px 10px 10px;
-  border-color: transparent transparent #dddddd transparent;
-  position: absolute;
-  left: 50%;
-  margin-left: -5px;
-  top: -10px;
-}
-.prototyper-fieldset .prototyper-help .prototyper-help-text:after {
-  content: "";
-  width: 0px;
-  height: 0px;
-  border-style: solid;
-  border-width: 0 8px 8px 8px;
-  border-color: transparent transparent white transparent;
-  left: 50%;
-  margin-left: -3px;
-  position: absolute;
-  top: -8px;
-}
-.prototyper-fieldset .prototyper-help .prototyper-help-text:before, .prototyper-fieldset .prototyper-help .prototyper-help-text:after {
-  left: 25%;
-}
-.prototyper-fieldset .prototyper-help .prototyper-help-text + input, .prototyper-fieldset .prototyper-help .prototyper-help-text + select, .prototyper-fieldset .prototyper-help .prototyper-help-text + textarea {
-  margin: 10px;
-}
-.prototyper-fieldset .prototyper-help:hover .prototyper-help-text {
-  display: block;
-}
 .prototyper-fieldset .elgg-head, .prototyper-fieldset .elgg-body {
   *zoom: 1;
-  padding: 5px 0 0;
 }
 .prototyper-fieldset .elgg-head:before, .prototyper-fieldset .elgg-head:after, .prototyper-fieldset .elgg-body:before, .prototyper-fieldset .elgg-body:after {
   content: " ";
@@ -496,13 +443,22 @@ form .prototyper-fieldset {
   font-size: 16px;
   margin-left: 5px;
 }
-
-.prototyper-validation-error {
+.prototyper-fieldset > div {
+  margin: 0;
+}
+.elgg-form .prototyper-fieldset {
+  border: none;
+  padding: 10px 0;
+  margin: 0;
+}
+.prototyper-fieldset .prototyper-validation-error, .prototyper-fieldset .parsley-errors-list {
   padding-left: 40px;
-  margin-bottom: 15px;
   list-style: circle;
   font-size: 90%;
   color: red;
+}
+.prototyper-fieldset .prototyper-validation-error > li:last-child, .prototyper-fieldset .parsley-errors-list > li:last-child {
+  margin-bottom: 15px;
 }
 
 .elgg-icon.elgg-icon-prototyper-question {
@@ -516,7 +472,7 @@ form .prototyper-fieldset {
   -moz-osx-font-smoothing: grayscale;
 }
 .elgg-icon.elgg-icon-prototyper-question:after {
-  content: "\f128";
+  content: "";
 }
 .elgg-icon.elgg-icon-prototyper-round-plus {
   background: none;
@@ -529,7 +485,7 @@ form .prototyper-fieldset {
   -moz-osx-font-smoothing: grayscale;
 }
 .elgg-icon.elgg-icon-prototyper-round-plus:after {
-  content: "\f055";
+  content: "";
 }
 .elgg-icon.elgg-icon-prototyper-round-minus {
   background: none;
@@ -542,7 +498,7 @@ form .prototyper-fieldset {
   -moz-osx-font-smoothing: grayscale;
 }
 .elgg-icon.elgg-icon-prototyper-round-minus:after {
-  content: "\f056";
+  content: "";
 }
 
 .prototyper-output {

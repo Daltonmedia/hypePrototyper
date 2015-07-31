@@ -2,7 +2,7 @@
 
 namespace hypeJunction\Prototyper;
 
-class Form {
+class ActionController {
 
 	private $config;
 	private $prototype;
@@ -25,17 +25,12 @@ class Form {
 	 * @param mixed  $entity ElggEntity or an array of entity attributes
 	 * @param string $action Action name (used as a plugin hook type)
 	 * @param array  $params Additional context params to pass to the hook
-	 * @return Elements\Form
+	 * @return Elements\ActionController
 	 */
 	public function with($entity = array(), $action = 'all', array $params = array()) {
 
 		$entity = $this->entityFactory->build($entity);
-		$fields = $this->prototype->fields($entity, $action, $params)
-				->filter(function(Elements\Field $field) {
-					return (!$field->isAdminOnly() || elgg_is_admin_logged_in());
-				})
-				->sort();
-
-		return new Elements\Form($entity, $action, $fields);
+		$fields = $this->prototype->fields($entity, $action, $params);
+		return new Elements\ActionController($entity, $action, $fields);
 	}
 }

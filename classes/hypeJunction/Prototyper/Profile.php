@@ -2,42 +2,40 @@
 
 namespace hypeJunction\Prototyper;
 
-class Profile extends Prototype {
+class Profile {
+
+	private $config;
+	private $prototype;
+	private $entityFactory;
 
 	/**
-	 * Render an entity profile
-	 * @return string HTML
+	 * Constructor
+	 *
+	 * @param Config $config
 	 */
-	public function view() {
-
-		$fields = $this->getFields();
-
-		$output = '';
-
-		// Prepare fields
-		foreach ($fields as $field) {
-			if ($field->getOutputView() === false) {
-				continue;
-			}
-			if ($field->getType() == 'hidden') {
-				continue;
-			}
-			$field_view = $field->viewOutput($this->getParams());
-			if ($field_view) {
-				$output .= elgg_format_element('div', array(
-					'class' => 'prototyper-output',
-						), $field_view);
-			}
-		}
-
-		return $output;
+	public function __construct(Config $config, Prototype $prototype, EntityFactory $entityFactory) {
+		$this->config = $config;
+		$this->prototype = $prototype;
+		$this->entityFactory = $entityFactory;
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * Returns a form element object
+	 *
+	 * @param mixed  $entity ElggEntity or an array of entity attributes
+	 * @param string $action Action name (used as a plugin hook type)
+	 * @param array  $params Additional context params to pass to the hook
+	 * @return Elements\Profile
 	 */
-	public function getHandler() {
-		return self::CONTEXT_PROFILE;
-	}
+	public function with($entity = array(), $action = 'all', array $params = array()) {
 
+		$entity = $this->entityFactory->build($entity);
+		$fields = $this->prototype->fields($entity, $action, $params)
+				->filter(function(Elements\Field $field) {
+					return (!$field->isAdminOnly() || elgg_is_admin_logged_in());
+				})
+				->sort();
+
+		return new Elements\Profile($entity, $action, $fields);
+	}
 }

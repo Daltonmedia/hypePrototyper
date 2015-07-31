@@ -1,5 +1,9 @@
 hypePrototyper
 ==============
+![Elgg 1.8](https://img.shields.io/badge/Elgg-1.8.x-orange.svg?style=flat-square)
+![Elgg 1.9](https://img.shields.io/badge/Elgg-1.9.x-orange.svg?style=flat-square)
+![Elgg 1.10](https://img.shields.io/badge/Elgg-1.10.x-orange.svg?style=flat-square)
+![Elgg 1.11](https://img.shields.io/badge/Elgg-1.11.x-orange.svg?style=flat-square)
 
 A set of developer and administrator tools for prototyping and handling
 entity forms.
@@ -11,12 +15,12 @@ and display entity profiles.
 
 ### Prototypes
 
-Prototypes have 3 different interfaces:
+Prototypes have 3 different facades:
 * *Form* displays a set of inputs that are used to modify entity information
 * *Action* validates and handles user input
 * *Profile* outputs entity information
 
-Prototypes consist of fields and are tied to registered Elgg actions. 
+Prototypes consist of fields and are meant to be tied to registered Elgg actions.
 Prototype fields can be populated using ```"prototype",$action``` plugin hook.
 
 The idea here is that entities of the same type and subtype can be modified by multiple actions.
@@ -31,25 +35,19 @@ it when the form has been submitted and validated).
 
 ```php
 
-namespace hypeJunction\Prototyper;
-
 $user = elgg_get_logged_in_user_entity();
+echo hypePrototyper()->form->with($user, 'profile/edit')->view();
 
-$form = new Form('profile/edit');
-$form->setEntity($user);
-echo $form->view();
 ```
 
 ```php
 
-namespace hypeJunction\Prototyper;
-
-$form = new Form('register', array('type' => 'user'));
-$body = $form->viewBody();
+$form = hypePrototyper()->form->with(array('type' => 'user'), 'register')->viewBody();
 
 echo elgg_view('input/form', array(
 	'action' => 'register',
-	'body' => $body
+	'body' => $body,
+	'enctype' => 'multipart/form-data', // if we have file inputs
 ));
 ```
 
@@ -58,49 +56,50 @@ echo elgg_view('input/form', array(
 
 ```php
 
-namespace hypeJunction\Prototyper;
-
 $guid = get_input('guid');
 $container_guid = get_input('container_guid');
 
-// We are setting attributes in the constructor, and guid as an entity
-// The class uses a factory that will either use an existing entity or
-// instantiate a new one based on attributes
-$action = new Action('blog/edit', array(
-	'type' => 'object',
-	'subtype' => 'blog',
-	'container_guid' => $container_guid,
-		));
-$action->setEntity($guid);
+if (!$guid) {
+	$entity = array(
+		'type' => 'object',
+		'subtype' => 'blog',
+		'container_guid' => $container_guid,
+	);
+} else {
+	$entity = get_entity($guid);
+}
 
-// This will validate, save values, show messages and forward
-$result = $action->handle();
+if (!$entity) {
+	// something is wrong
+    forward();
+}
+
+hypePrototyper()->action->with($entity, 'blog/edit')->handle();
 ```
 
 ```php
 
-$action = new Action('file/upload', array(
+$entity = array(
 	'type' => 'object',
 	'subtype' => 'file',
 	'access_id' => ACCESS_LOGGED_IN,
-));
+);
 
 // In case we want to do more stuff with the new entity
 try {
-	$result = $action->update();
+	$controller = hypePrototyper()->action->with($entity, 'file/upload');
+	if ($controller->validate()) {
+		$entity = $controller->update();
+	}
+	if ($entity) {
+		// do more stuff
+	}
 } catch (Exception $ex) {
 	// do something with the error
 }
-
-if ($result) {
-	$entity = $action->getEntity();
-
-	// do more stuff
-}
 ```
 
-The above will validate the form and add all values to the entity based on the
-```data_type``` you have specified. If the form validation fails, the user
+The above will validate the form and add all values to the entity based. If the form validation fails, the user
 will be forwarded back to the form (forms are made sticky) and failing validation
 rules will be explained.
 
@@ -108,15 +107,12 @@ rules will be explained.
 
 ```php
 
-$profile = new Profile('groups/edit');
-$profile->setEntity($group);
+echo hypePrototyper()->profile->with($group, 'groups/edit')
+	->filter(function($field) {
+		return in_array($field->getShortname(), array('title', 'description', 'tags'));
+	})
+	->view($vars);
 
-// Add a filter to only show certain fields
-$profile->setFilter(function($field) {
-	return in_array($field->getShortname(), array('title', 'description', 'tags'));
-});
-
-echo $profile->view();
 ```
 
 
@@ -164,7 +160,7 @@ function prepare_profile_edit_form($hook, $type, $return, $params) {
 			'type' => 'checkboxes',
 			'label' => false,
 			'help' => false,
-			'options' => 'profile_get_looking_for_options'
+			'options' => profile_get_looking_for_options(),
 		),
 		'height' => array(
 			'type' => 'text',
@@ -188,7 +184,7 @@ function prepare_profile_edit_form($hook, $type, $return, $params) {
 		'spouse' => array(
 			'type' => 'autocomplete',
 			'data_type' => 'relationship',
-			'value_type' => 'guid',
+			'value_type' => 'entity',
 			'inverse_relationship' => false,
 			'bilateral' => true,
 			'match_on' => 'friends',
@@ -215,13 +211,15 @@ with the following properties:
 	> ```annotation``` - an entity annotation
 	> ```relationship``` - an entity relationship
 	> ```icon``` - an entity icon
-	> ```cover``` - an entity cover image
 	> ```category``` - entity categories (hypeCategories)
 * ```class_name``` - PHP class used to instantiate a Field with a custom data type
-* ```value_type``` - type of value if different from ```type```, e.g when a text input expects a number
+* ```value_type``` - type of value if different from ```type```, e.g when a text input expects an integer
+						The value type is automatically added to 'type' validation rules,
+						thus setting 'value_type' => 'integer' is also equivalent to 'validation_rules' => ['type' => 'integer']
 * ```input_view``` - view used to dipslay an input, if different from "input/$type"
 * ```output_view``` - view used to dipslay an output, if different from "output/$type"
 * ```required``` - whether or not a user input is requried (default ```false```)
+* ```admin_only``` - whether or not the field is only visible to admins (default ```false```)
 * ```priority``` - order of the field (default ```500```)
 * ```show_access``` - whether or not to display an access input (default ```false```)
 	This allows users to specify an access level for the metadata, annotation or attachment created
@@ -235,13 +233,41 @@ with the following properties:
 	> any other custom string
 * ```multiple``` - whether or not a user can clone the field and add multiple values (default ```false```)
 * ```validation_rules``` - an array of rule => expecation pairs
-	Preset validators are max, min, maxlength, minlength
-	You can define custom validation rules and use ```'validate:rule','prototyper'``` to validate the values
-* ```options``` and ```options_values``` can be defined as a callback function name
+	You can define custom validation rules and use ```'validate:$rule','prototyper'``` to validate the values
+	See hypePrototyperValidators for a full list of available validators
+* ```options``` and ```options_values``` - array of options to pass to the input
 * ```flags``` - comma-separated list of flags that can be used for input/output filtering
 * all other options will be passed to the input view, so you can add ```class``` for example
 
 The following options are available for ```relationship``` data type:
 * ```inverse_relationship``` - store as inverse relationship
 * ```bilateral``` - make it a bilateral relationship (two relationships will be added)
+
+
+### Custom Fields
+
+To define a new field type, register it as so:
+
+```php
+
+hypePrototyper()->config->registerType('icon', \hypeJunction\Prototyper\Elements\IconField::CLASSNAME, array(
+			'accept' => 'image/*',
+			'value_type' => 'image',
+			'multiple' => false,
+			'show_access' => false,
+			'input_view' => 'input/file',
+			'output_view' => false,
+			'ui_sections' => array(
+				'access' => false,
+				'multiple' => false,
+			)
+		));
+
+```
+
+The above registers a new input type 'icon' with a handler class IconField that extends abstract Field.
+The third parameter contains default key - value pairs (which can later be overridden in a hook).
+'ui_sections' parameter specifies which sections should be disabled in the admin interface provided by
+hypePrototyperUI.
+
 

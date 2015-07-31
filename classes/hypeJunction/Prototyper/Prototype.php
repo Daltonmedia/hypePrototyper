@@ -2,242 +2,135 @@
 
 namespace hypeJunction\Prototyper;
 
-use ElggEntity;
+/**
+ * Prototype service
+ */
+class Prototype {
 
-abstract class Prototype {
-
-	const CONTEXT_ACTION = 'action';
-	const CONTEXT_FORM = 'form';
-	const CONTEXT_PROFILE = 'profile';
+	const COOKIE_NAME = 'elgg_hP';
+	
+	/**
+	 * Config
+	 * @var Config
+	 */
+	private $config;
 
 	/**
-	 * Attributes of an entity
-	 * @var array 
+	 * Entity factory service
+	 * @var EntityFactory
 	 */
-	protected $attributes = array();
+	private $entityFactory;
 
 	/**
-	 * Entity
-	 * @var Entity
+	 * Field factory service
+	 * @var FieldFactory
 	 */
-	protected $entity;
-
-	/**
-	 * Registered action name
-	 * @var string
-	 */
-	protected $action;
-
-	/**
-	 * Additional params
-	 * @var array 
-	 */
-	protected $params = array();
-
-	/**
-	 * Fields
-	 * @var array
-	 */
-	protected $fields = array();
-
-	/**
-	 * Callback function to filter fields
-	 * @var mixed
-	 */
-	protected $filter;
+	private $fieldFactory;
 
 	/**
 	 * Constructor
 	 *
-	 * @param string $action     Registered action name
-	 * @param array  $attributes Attributes, include type and subtype
+	 * @param \hypeJunction\Prototyper\Config $config
+	 * @param \hypeJunction\Prototyper\EntityFactory $entityFactory
+	 * @param \hypeJunction\Prototyper\FieldFactory $fieldFactory
 	 */
-	public function __construct($action = '', $attributes = array()) {
-		$this->action = $action;
-		$this->attributes = $attributes;
+	public function __construct(Config $config, EntityFactory $entityFactory, FieldFactory $fieldFactory) {
+		$this->config = $config;
+		$this->entityFactory = $entityFactory;
+		$this->fieldFactory = $fieldFactory;
 	}
 
 	/**
-	 * Returns current context
-	 * @return string Enumeration of "action", "form" or "profile"
-	 */
-	abstract function getHandler();
-
-	/**
-	 * Sets an action
-	 * 
-	 * @param string $action Action name
-	 * @return self
-	 */
-	public function setAction($action = '') {
-		$this->action = $action;
-	}
-
-	/**
-	 * Returns action name
-	 * @return string
-	 */
-	public function getAction() {
-		return $this->action;
-	}
-
-	/**
-	 * Sets an existing entity
+	 * Returns a field collection
 	 *
-	 * @param mixed $entity Entity or guid
-	 * @return self
+	 * @param mixed  $entity ElggEntity or an array of entity attributes
+	 * @param string $action Action name (used as a plugin hook type)
+	 * @param array  $params Additional context params to pass to the hook
+	 * @return \hypeJunction\Prototyper\Elements\FieldCollection
 	 */
-	public function setEntity($entity = null) {
-		$this->entity = $entity;
-	}
+	public function fields($entity = array(), $action = 'all', array $params = array()) {
 
-	/**
-	 * Returns an entity
-	 * @return ElggEntity
-	 */
-	public function getEntity() {
-		if (!$this->entity instanceof ElggEntity) {
-			$this->entity = Entity::factory($this->entity, $this->attributes);
-		}
-		return $this->entity;
-	}
+		$fieldCollection = array();
 
-	/**
-	 * Sets handler params
-	 * 
-	 * @param array $params Params
-	 * @return self
-	 */
-	public function setParams(array $params = array()) {
-		$this->params = $params;
-	}
+		$entity = $this->entityFactory->build($entity);
+		if ($entity instanceof \ElggEntity) {
+			$params['entity'] = $entity;
+			$fields = (array) elgg_trigger_plugin_hook('prototype', $action, $params, array());
 
-	/**
-	 * Returns handler params
-	 * @return type
-	 */
-	public function getParams() {
-		return (is_array($this->params)) ? $this->params : array();
-	}
+			$attribute_names = $this->entityFactory->getAttributeNames($entity);
+			if (!$entity->guid) {
+				$fields['type'] = array('type' => 'hidden');
+				$fields['subtype'] = array('type' => 'hidden');
+				$fields['owner_guid'] = array('type' => 'hidden');
+				$fields['container_guid'] = array('type' => 'hidden');
+			} else {
+				$fields['guid'] = array('type' => 'hidden');
+			}
 
-	/**
-	 * Adds a callback for filtering fields
-	 *
-	 * @param mixed $callable Callback function used as argument for array_filter()
-	 * @return self
-	 */
-	public function setFilter($callable) {
-		$this->filter = $callable;
-		return self;
-	}
+			foreach ($fields as $shortname => $field) {
+				$field['entity_type'] = $entity->getType();
+				$field['entity_subtype'] = $entity->getSubtype();
+				if (empty($field['shortname'])) {
+					$field['shortname'] = $shortname;
+				}
+				
+				if (in_array($shortname, $attribute_names)) {
+					$field['data_type'] = 'attribute';
+					$field['class_name'] = Elements\AttributeField::CLASSNAME;
+				}
 
-	/**
-	 * Removess the filter
-	 * @return self
-	 */
-	public function removeFilter() {
-		unset($this->filter);
-		return $this;
-	}
-
-	/**
-	 * Get form fields
-	 * @return Field[]
-	 */
-	public function getFields() {
-		$params = $this->getParams();
-		$params['entity'] = $this->getEntity();
-		$params['context'] = $this->getHandler();
-
-		$fields = elgg_trigger_plugin_hook('prototype', $this->action, $params, array());
-
-		$this->setFields($fields);
-		$this->setAttributeFields();
-		$this->filterFields();
-		$this->sortFields();
-
-		return $this->fields;
-	}
-
-	/**
-	 * Adds a field to a form
-	 *
-	 * @param array  $options Field options
-	 * @return Field
-	 */
-	public function addField($options = array()) {
-		$field = Field::factory($options, $this->getEntity());
-		if ($this->hasField($options['shortname'])) {
-			$this->removeField($options['shortname']);
-		}
-		$this->fields[] = $field;
-		return $field;
-	}
-
-	/**
-	 * Removes a field from a from
-	 *
-	 * @param string $shortname Field name
-	 * @return self
-	 */
-	public function removeField($shortname) {
-		foreach ($this->fields as $key => $field) {
-			if ($field instanceof Field && $field->getShortname() == $shortname) {
-				unset($this->fields[$key]);
+				$fieldObj = $this->fieldFactory->build($field);
+				if ($fieldObj instanceof Elements\Field) {
+					$fieldCollection[] = $fieldObj;
+				}
 			}
 		}
-		return $this;
-	}
 
-	/**
-	 * Checks if the form has a field
-	 *
-	 * @param string $shortname Field name
-	 * @return bool
-	 */
-	public function hasField($shortname = '') {
-		foreach ($this->fields as $field) {
-			if ($field instanceof Field && $field->getShortname() == $shortname) {
-				return true;
-			}
-		}
-		return false;
+		return new Elements\FieldCollection($fieldCollection);
 	}
 
 	/**
 	 * Store submitted sticky values
+	 *
+	 * @param string $action Action name
 	 * @return bool
 	 */
-	public function saveStickyValues() {
-		return elgg_make_sticky_form($this->getAction());
+	public function saveStickyValues($action = '') {
+		return elgg_make_sticky_form($action);
 	}
 
 	/**
 	 * Clear sticky values
+	 *
+	 * @param string $action Action name
 	 * @return type
 	 */
-	public function clearStickyValues() {
-		return elgg_clear_sticky_form($this->getAction());
+	public function clearStickyValues($action = '') {
+		return elgg_clear_sticky_form($action);
 	}
 
 	/**
 	 * Get sticky values
-	 * @return type
+	 *
+	 * @param string $action Action name
+	 * @return mixed
 	 */
-	public function getStickyValues() {
-		return elgg_get_sticky_values($this->getAction());
+	public function getStickyValues($action = '') {
+		return elgg_get_sticky_values($action);
 	}
 
 	/**
 	 * Get form validation status
+	 *
+	 * @param string $action Action name
 	 * @return type
 	 */
-	public function getValidationStatus() {
+	public function getValidationStatus($action = '') {
 
 		$validation_status = null;
 
-		if (isset($_SESSION['prototyper_validation'][$this->action])) {
-			$validation_status = $_SESSION['prototyper_validation'][$this->action];
+		if (isset($_SESSION['prototyper_validation'][$action])) {
+			$validation_status = $_SESSION['prototyper_validation'][$action];
 		}
 
 		return $validation_status;
@@ -245,17 +138,19 @@ abstract class Prototype {
 
 	/**
 	 * Save validation status of the field
-	 * @param string $shortname
-	 * @param ValidationStatus $validation
+	 *
+	 * @param string                    $action     Action name
+	 * @param string                    $shortname  Field name
+	 * @param Elements\ValidationStatus $validation Status
 	 * @return void
 	 */
-	public function setFieldValidationStatus($shortname, ValidationStatus $validation) {
+	public function setFieldValidationStatus($action = '', $shortname = '', Elements\ValidationStatus $validation = null) {
 
-		if (!isset($_SESSION['prototyper_validation'][$this->action])) {
-			$_SESSION['prototyper_validation'][$this->action] = array();
+		if (!isset($_SESSION['prototyper_validation'][$action])) {
+			$_SESSION['prototyper_validation'][$action] = array();
 		}
 
-		$_SESSION['prototyper_validation'][$this->action][$shortname] = array(
+		$_SESSION['prototyper_validation'][$action][$shortname] = array(
 			'status' => $validation->getStatus(),
 			'messages' => $validation->getMessages()
 		);
@@ -263,75 +158,14 @@ abstract class Prototype {
 
 	/**
 	 * Clear form validation
+	 *
+	 * @param string $action Action name
 	 * @return void
 	 */
-	public function clearValidationStatus() {
-
-		if (isset($_SESSION['prototyper_validation'][$this->action])) {
-			unset($_SESSION['prototyper_validation'][$this->action]);
+	public function clearValidationStatus($action = '') {
+		if (isset($_SESSION['prototyper_validation'][$action])) {
+			unset($_SESSION['prototyper_validation'][$action]);
 		}
-	}
-
-	/**
-	 * Sets entity attribute fields
-	 * @return self
-	 */
-	protected function setAttributeFields() {
-		$attributes = Entity::getAttributeNames($this->getEntity());
-		foreach ($attributes as $shortname) {
-			if (!$this->hasField($shortname)) {
-				$this->addField(array(
-					'shortname' => $shortname,
-					'type' => 'hidden',
-					'priority' => 1,
-				));
-			}
-		}
-	}
-
-	/**
-	 * Set form fields
-	 *
-	 * @param array $fields
-	 * @return Form
-	 */
-	protected function setFields(array $fields = array()) {
-
-		foreach ($fields as $shortname => $field) {
-			if (!isset($field['shortname'])) {
-				$field['shortname'] = $shortname;
-			}
-			$this->addField($field);
-		}
-		return $this;
-	}
-
-	/**
-	 * Filters fields using set filters
-	 * @return self
-	 */
-	protected function filterFields() {
-
-		if (is_callable($this->filter)) {
-			$this->fields = array_filter($this->fields, $this->filter);
-		}
-		return $this;
-	}
-
-	/**
-	 * Sort fields by priority
-	 * @return self
-	 */
-	protected function sortFields() {
-		uasort($this->fields, function($a, $b) {
-			$priority_a = (int) $a->get('priority') ? : 500;
-			$priority_b = (int) $b->get('priority') ? : 500;
-			if ($priority_a == $priority_b) {
-				return 0;
-			}
-			return ($priority_a < $priority_b) ? -1 : 1;
-		});
-		return $this;
 	}
 
 }
