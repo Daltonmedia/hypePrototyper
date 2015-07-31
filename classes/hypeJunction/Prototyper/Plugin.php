@@ -91,7 +91,7 @@ final class Plugin extends \hypeJunction\Plugin {
 		elgg_extend_view('css/admin', 'css/framework/prototyper/stylesheet');
 
 		elgg_extend_view('prototyper/input/before', 'prototyper/elements/js');
-		
+
 		if (\hypeJunction\Integration::isElggVersionBelow('1.9.0')) {
 			// Prototyper interface
 			elgg_register_simplecache_view('js/framework/legacy/prototyper');
@@ -232,21 +232,34 @@ final class Plugin extends \hypeJunction\Plugin {
 				'multiple' => false,
 			)
 		));
-		
-		if (elgg_is_active_plugin('hypeDropzone') || elgg_is_active_plugin('elgg_dropzone')) {
-			hypePrototyper()->config->registerType('image', Elements\ImageField::CLASSNAME, array(
+
+		hypePrototyper()->config->registerType('upload', Elements\UploadField::CLASSNAME, array(
+			'multiple' => false,
+			'show_access' => false,
+			'input_view' => 'input/file',
+			'ui_sections' => array(
+				'value' => true,
+				'access' => false,
 				'multiple' => false,
-				'show_access' => false,
-				'input_view' => 'input/dropzone',
-				'output_view' => 'prototyper/output/image',
-				'ui_sections' => array(
-					'value' => true,
-					'access' => false,
-					'multiple' => true,
-					'validation' => false
-				)
-			));
-		}
+				'validation' => true
+			)
+		));
+
+		hypePrototyper()->config->registerType('image_upload', Elements\ImageUploadField::CLASSNAME, array(
+			'multiple' => false,
+			'accept' => 'image/*',
+			'show_access' => false,
+			'input_view' => 'input/file',
+			'validation_rules' => array(
+				'type' => 'image',
+			),
+			'ui_sections' => array(
+				'value' => true,
+				'access' => false,
+				'multiple' => false,
+				'validation' => true
+			)
+		));
 	}
 
 }

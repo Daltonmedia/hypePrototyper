@@ -2,7 +2,7 @@
 
 namespace hypeJunction\Prototyper\Elements;
 
-class IconField extends Field {
+class UploadField extends Field {
 
 	const CLASSNAME = __CLASS__;
 
@@ -10,21 +10,15 @@ class IconField extends Field {
 	 * {@inheritdoc}
 	 */
 	public function getValues(\ElggEntity $entity) {
-		return ($entity->icontime);
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function isMultiple() {
-		return false;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function hasAccessInput() {
-		return false;
+		return elgg_get_entities_from_metadata(array(
+			'types' => 'object',
+			'subtypes' => 'file',
+			'container_guids' => (int) $entity->guid,
+			'metadata_name_value_pairs' => array(
+				'name' => 'prototyper_field',
+				'value' => $this->getShortname(),
+			)
+		));
 	}
 
 	/**
@@ -40,7 +34,7 @@ class IconField extends Field {
 
 		$has_uploaded_file = ($error_type != UPLOAD_ERR_NO_FILE);
 		if (!$has_uploaded_file) {
-			if ($this->isRequired() && !$entity->icontime) {
+			if ($this->isRequired() && empty($entity->{"upload:$shortname"})) {
 				$validation->setFail(elgg_echo('prototyper:validate:error:required', array($this->getLabel())));
 			}
 		} else {
@@ -75,25 +69,37 @@ class IconField extends Field {
 		$params = array(
 			'field' => $this,
 			'entity' => $entity,
-			'icon_name' => $shortname,
+			'upload_name' => $shortname,
 			'future_value' => $future_value,
 		);
 
-		// Allow plugins to prevent icons from being uploaded
-		if (!elgg_trigger_plugin_hook('handle:icon:before', 'prototyper', $params, true)) {
+		// Allow plugins to prevent files from being uploaded
+		if (!elgg_trigger_plugin_hook('handle:upload:before', 'prototyper', $params, true)) {
 			return $entity;
 		}
 
-		$result = hypeApps()->iconFactory->create($entity, elgg_extract('tmp_name', $value));
+		$result = hypeApps()->uploader->handle($shortname, array(
+			'container_guid' => $entity->guid,
+			'origin' => 'prototyper',
+			'prototyper_field' => $shortname,
+			'access_id' => $entity->access_id,
+		));
+		/* @var $result \ElggFile[] */
+
+		$future_value = $result[0];
+
+		if ($future_value instanceof \ElggFile) {
+			$entity->{"upload:$shortname"} = time();
+		}
 
 		$params = array(
 			'field' => $this,
 			'entity' => $entity,
-			'icon_name' => $shortname,
+			'upload_name' => $shortname,
 			'value' => $future_value,
 		);
 
-		elgg_trigger_plugin_hook('handle:icon:after', 'prototyper', $params, $result);
+		elgg_trigger_plugin_hook('handle:upload:after', 'prototyper', $params, $result);
 
 		return $entity;
 	}
@@ -102,7 +108,7 @@ class IconField extends Field {
 	 * {@inheritdoc}
 	 */
 	public static function getDataType() {
-		return 'icon';
+		return 'file';
 	}
 
 }

@@ -78,7 +78,7 @@ class Prototype {
 					$field['data_type'] = 'attribute';
 					$field['class_name'] = Elements\AttributeField::CLASSNAME;
 				}
-
+				
 				$fieldObj = $this->fieldFactory->build($field);
 				if ($fieldObj instanceof Elements\Field) {
 					$fieldCollection[] = $fieldObj;

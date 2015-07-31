@@ -454,7 +454,7 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 	/**
 	 * {@inheritdoc}
 	 */
-	public function applyValidationRules($value = '', ValidationStatus $validation = null) {
+	public function applyValidationRules($value = '', ValidationStatus $validation = null, \ElggEntity $entity = null) {
 
 		if (!$validation instanceof ValidationStatus) {
 			$validation = new ValidationStatus;
@@ -468,6 +468,7 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 					'field' => $this,
 					'value' => $value,
 					'expectation' => $expectation,
+					'entity' => $entity,
 						), $validation);
 
 				if (!$validation instanceof ValidationStatus) {

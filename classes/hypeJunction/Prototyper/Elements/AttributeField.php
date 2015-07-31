@@ -46,7 +46,7 @@ class AttributeField extends Field {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function validate() {
+	public function validate(\ElggEntity $entity) {
 
 		$validation = new ValidationStatus();
 
@@ -59,7 +59,7 @@ class AttributeField extends Field {
 				$validation->setFail(elgg_echo('prototyper:validate:error:required', array($this->getLabel())));
 			}
 		} else {
-			$validation = $this->applyValidationRules($value, $validation);
+			$validation = $this->applyValidationRules($value, $validation, $entity);
 		}
 
 		return $validation;

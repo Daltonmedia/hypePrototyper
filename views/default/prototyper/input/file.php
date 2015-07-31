@@ -1,23 +1,25 @@
 <?php
-
-namespace hypeJunction\Prototyper;
-
 $field = elgg_extract('field', $vars);
+$entity = elgg_extract('entity', $vars);
 
-if (!$field instanceof IconField) {
-	return true;
+if (!$field instanceof hypeJunction\Prototyper\Elements\UploadField) {
+	return;
 }
 
-$entity = $field->getEntity();
 $name = $field->getShortname();
 
 if (!$entity || !$name) {
-	return true;
+	return;
 }
+
+$input_vars = $field->getInputVars($entity);
+$input_vars['name'] = $name;
+$uploads = $field->getValues($entity);
+$input_vars['value'] = !empty($uploads);
 
 $label = $field->getLabel();
 $help = $field->getHelp();
-$required = $field->isRequired() && !$entity->icontime;
+$required = $field->isRequired() && empty($uploads);
 
 if ($required) {
 	$label_attrs = elgg_format_attributes(array(
@@ -26,37 +28,36 @@ if ($required) {
 	));
 }
 
-$input_vars = $field->getInputVars();
-$input_vars['name'] = $name;
-$input_vars['value'] = $field->getValues();
-
 $type = $field->getType();
 $view = $field->getInputView();
 $input = elgg_view($view, $input_vars);
+
+echo elgg_view('prototyper/input/before', $vars);
 ?>
-<fieldset class="prototyper-fieldset prototyper-fieldset-icon">
+<fieldset class="prototyper-fieldset prototyper-fieldset-upload">
 	<div class="elgg-head">
 		<div class="prototyper-col-12">
 			<?php
 			if ($label) {
 				echo "<label $label_attrs>$label</label>";
 			}
-			if ($help) {
-				echo '<span class="prototyper-help">' . elgg_view_icon('question') . '<span class="prototyper-help-text">' . $help . '</span><span>';
-			}
+			echo elgg_view('prototyper/elements/help', array(
+				'value' => $help,
+				'field' => $field,
+			));
 			?>
 		</div>
 	</div>
 	<div class="elgg-body">
 		<div class="prototyper-col-12">
 			<?php
-			$icon = '';
-			if ($entity->icontime) {
-				$icon = elgg_view_entity_icon($entity, 'small');
+			$upload = '';
+			if ($entity->uploadtime) {
+				$upload = elgg_view_entity_upload($entity, 'small');
 			}
 			echo elgg_view_image_block('', $input, array(
-				'image_alt' => $icon,
-				'class' => 'prototyper-icon-input',
+				'image_alt' => $upload,
+				'class' => 'prototyper-upload-input',
 			));
 			?>
 		</div>
@@ -64,7 +65,6 @@ $input = elgg_view($view, $input_vars);
 </fieldset>
 
 <?php
-
 if ($field->isValid() === false) {
 	echo '<ul class="prototyper-validation-error prototyper-col-12">';
 	$messages = $field->getValidationMessages();
@@ -76,3 +76,4 @@ if ($field->isValid() === false) {
 	}
 	echo '</ul>';
 }
+echo elgg_view('prototyper/input/after', $vars);
