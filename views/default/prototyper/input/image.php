@@ -90,29 +90,4 @@ echo elgg_view('prototyper/input/before', $vars);
 </fieldset>
 
 <?php
-if ($field->isValid() === false) {
-	echo '<ul class="prototyper-validation-error prototyper-col-12">';
-	$messages = $field->getValidationMessages();
-	if (!is_array($messages)) {
-		$messages = array($messages);
-	}
-	foreach ($messages as $m) {
-		echo '<li>' . $m . '</li>';
-	}
-	echo '</ul>';
-}
 echo elgg_view('prototyper/input/after', $vars);
-
-?>
-<script>
-		/**
-		 * Image cropping js
-		 */
-
-		$('.elgg-input-dropzone').live('initialize', function(e) {
-			// add some handlers
-			$(this).dropzone.live('addFile', function(e) {
-				console.log('file added');
-			});
-		});
-</script>

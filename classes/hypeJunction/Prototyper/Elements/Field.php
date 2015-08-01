@@ -343,6 +343,12 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 		}
 
 		$vars = (array) $this->input_vars;
+
+		$clean = array('ui_sections', 'relationship', 'inverse_relationship', 'bilateral');
+		foreach ($clean as $key) {
+			unset($vars[$key]);
+		}
+		
 		return elgg_trigger_plugin_hook('input_vars', 'prototyper', array(
 			'field' => $this,
 			'entity' => $entity,

@@ -2,6 +2,9 @@
 
 namespace hypeJunction\Prototyper\Elements;
 
+use ElggEntity;
+use ElggFile;
+
 class UploadField extends Field {
 
 	const CLASSNAME = __CLASS__;
@@ -9,22 +12,24 @@ class UploadField extends Field {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getValues(\ElggEntity $entity) {
-		return elgg_get_entities_from_metadata(array(
+	public function getValues(ElggEntity $entity) {
+		$files = elgg_get_entities_from_metadata(array(
 			'types' => 'object',
 			'subtypes' => 'file',
 			'container_guids' => (int) $entity->guid,
 			'metadata_name_value_pairs' => array(
 				'name' => 'prototyper_field',
 				'value' => $this->getShortname(),
-			)
+			),
+			'limit' => 1,
 		));
+		return ($files) ? $files[0] : false;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function validate(\ElggEntity $entity) {
+	public function validate(ElggEntity $entity) {
 
 		$shortname = $this->getShortname();
 		$validation = new ValidationStatus();
@@ -34,7 +39,7 @@ class UploadField extends Field {
 
 		$has_uploaded_file = ($error_type != UPLOAD_ERR_NO_FILE);
 		if (!$has_uploaded_file) {
-			if ($this->isRequired() && empty($entity->{"upload:$shortname"})) {
+			if ($this->isRequired() && empty($this->getValues($entity))) {
 				$validation->setFail(elgg_echo('prototyper:validate:error:required', array($this->getLabel())));
 			}
 		} else {
@@ -52,7 +57,7 @@ class UploadField extends Field {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function handle(\ElggEntity $entity) {
+	public function handle(ElggEntity $entity) {
 
 		$shortname = $this->getShortname();
 		$future_value = $_FILES[$shortname];
@@ -78,19 +83,20 @@ class UploadField extends Field {
 			return $entity;
 		}
 
+		$previous_upload = $this->getValues($entity);
+		if ($previous_upload instanceof ElggFile) {
+			$previous_upload->delete();
+		}
+		
 		$result = hypeApps()->uploader->handle($shortname, array(
 			'container_guid' => $entity->guid,
 			'origin' => 'prototyper',
 			'prototyper_field' => $shortname,
 			'access_id' => $entity->access_id,
 		));
-		/* @var $result \ElggFile[] */
+		/* @var $result ElggFile[] */
 
 		$future_value = $result[0];
-
-		if ($future_value instanceof \ElggFile) {
-			$entity->{"upload:$shortname"} = time();
-		}
 
 		$params = array(
 			'field' => $this,

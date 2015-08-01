@@ -61,22 +61,22 @@ echo elgg_view('prototyper/input/before', $vars);
 		<div class="prototyper-col-12">
 			<?php
 			echo $input;
+
+			if ($field->isValid() === false) {
+				echo '<ul class="prototyper-validation-error prototyper-col-12">';
+				$messages = $field->getValidationMessages();
+				if (!is_array($messages)) {
+					$messages = array($messages);
+				}
+				foreach ($messages as $m) {
+					echo '<li>' . $m . '</li>';
+				}
+				echo '</ul>';
+			}
 			?>
 		</div>
 	</div>
 </fieldset>
 
 <?php
-if ($field->isValid() === false) {
-	echo '<ul class="prototyper-validation-error prototyper-col-12">';
-	$messages = $field->getValidationMessages();
-	if (!is_array($messages)) {
-		$messages = array($messages);
-	}
-	foreach ($messages as $m) {
-		echo '<li>' . $m . '</li>';
-	}
-	echo '</ul>';
-}
-
 echo elgg_view('prototyper/input/after', $vars);

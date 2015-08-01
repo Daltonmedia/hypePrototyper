@@ -14,12 +14,13 @@ if (!$entity || !$name) {
 
 $input_vars = $field->getInputVars($entity);
 $input_vars['name'] = $name;
-$uploads = $field->getValues($entity);
-$input_vars['value'] = !empty($uploads);
+$upload = $field->getValues($entity);
+$input_vars['value'] = $upload instanceof ElggFile;
 
 $label = $field->getLabel();
 $help = $field->getHelp();
-$required = $field->isRequired() && empty($uploads);
+$required = $field->isRequired() && !$input_vars['value'];
+$input_vars['required'] = $required;
 
 if ($required) {
 	$label_attrs = elgg_format_attributes(array(
@@ -51,29 +52,29 @@ echo elgg_view('prototyper/input/before', $vars);
 	<div class="elgg-body">
 		<div class="prototyper-col-12">
 			<?php
-			$upload = '';
-			if ($entity->uploadtime) {
-				$upload = elgg_view_entity_upload($entity, 'small');
+			$icon = '';
+			if ($upload && $upload->icontime) {
+				$icon = elgg_view_entity_icon($upload, 'small');
 			}
 			echo elgg_view_image_block('', $input, array(
-				'image_alt' => $upload,
-				'class' => 'prototyper-upload-input',
+				'image_alt' => $icon,
+				'class' => 'prototyper-icon-input prototyper-upload-input',
 			));
+			if ($field->isValid() === false) {
+				echo '<ul class="prototyper-validation-error prototyper-col-12">';
+				$messages = $field->getValidationMessages();
+				if (!is_array($messages)) {
+					$messages = array($messages);
+				}
+				foreach ($messages as $m) {
+					echo '<li>' . $m . '</li>';
+				}
+				echo '</ul>';
+			}
 			?>
 		</div>
 	</div>
 </fieldset>
 
 <?php
-if ($field->isValid() === false) {
-	echo '<ul class="prototyper-validation-error prototyper-col-12">';
-	$messages = $field->getValidationMessages();
-	if (!is_array($messages)) {
-		$messages = array($messages);
-	}
-	foreach ($messages as $m) {
-		echo '<li>' . $m . '</li>';
-	}
-	echo '</ul>';
-}
 echo elgg_view('prototyper/input/after', $vars);
