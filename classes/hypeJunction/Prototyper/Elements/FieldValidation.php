@@ -6,9 +6,11 @@ interface FieldValidation {
 
 	/**
 	 * Validate user input values
+	 *
+	 * @param \ElggEntity $entity Entity to validate against
 	 * @return ValidationStatus
 	 */
-	public function validate();
+	public function validate(\ElggEntity $entity);
 
 	/**
 	 * Add a validation rule to the field
@@ -38,9 +40,10 @@ interface FieldValidation {
 	 *
 	 * @param mixed            $value      Value to validate
 	 * @param ValidationStatus $validation Current validation status
+	 * @param \ElggEntity      $entity     Entity to validate against
 	 * @return ValidationStatus
 	 */
-	public function applyValidationRules($value = '', ValidationStatus $validation = null);
+	public function applyValidationRules($value = '', ValidationStatus $validation = null, \ElggEntity $entity = null);
 
 	/**
 	 * Set validation status

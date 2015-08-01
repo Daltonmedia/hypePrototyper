@@ -1,5 +1,4 @@
 <?php
-
 $field = elgg_extract('field', $vars);
 $index = elgg_extract('index', $vars, '');
 $entity = elgg_extract('entity', $vars);
@@ -52,10 +51,11 @@ foreach ($metadata as $md) {
 	$input_vars['name'] = "{$name}[value][{$index}]";
 	$input_vars['value'] = $md->value;
 	$input_vars['data-reset'] = true;
-	
+	$input_vars['placeholder'] = $label;
+
 	$type = $field->getType();
 	$view = $field->getInputView();
-	
+
 	$input = elgg_view($view, $input_vars);
 
 	$show_access = $field->hasAccessInput();
@@ -91,10 +91,6 @@ foreach ($metadata as $md) {
 				if ($label) {
 					echo "<label $label_attrs>$label</label>";
 				}
-				echo elgg_view('prototyper/elements/help', array(
-					'value' => $help,
-					'field' => $field,
-				));
 				if ($multiple) {
 					echo elgg_view('output/url', array(
 						'text' => elgg_view_icon('prototyper-round-plus'),
@@ -109,6 +105,10 @@ foreach ($metadata as $md) {
 						'is_trusted' => true,
 					));
 				}
+				echo elgg_view('prototyper/elements/help', array(
+					'value' => $help,
+					'field' => $field,
+				));
 				?>
 			</div>
 			<div class="prototyper-col-3 prototyper-access">
@@ -122,23 +122,23 @@ foreach ($metadata as $md) {
 				<?php
 				echo $hidden;
 				echo $input;
+
+				if ($field->isValid() === false) {
+					echo '<ul class="prototyper-validation-error prototyper-col-12">';
+					$messages = $field->getValidationMessages();
+					if (!is_array($messages)) {
+						$messages = array($messages);
+					}
+					foreach ($messages as $m) {
+						echo '<li>' . $m . '</li>';
+					}
+					echo '</ul>';
+				}
 				?>
 			</div>
 		</div>
 	</fieldset>
 	<?php
-}
-
-if ($field->isValid() === false) {
-	echo '<ul class="prototyper-validation-error prototyper-col-12">';
-	$messages = $field->getValidationMessages();
-	if (!is_array($messages)) {
-		$messages = array($messages);
-	}
-	foreach ($messages as $m) {
-		echo '<li>' . $m . '</li>';
-	}
-	echo '</ul>';
 }
 
 echo elgg_view('prototyper/input/after', $vars);

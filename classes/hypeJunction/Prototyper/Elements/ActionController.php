@@ -93,7 +93,7 @@ class ActionController {
 				continue;
 			}
 
-			$validation = $field->validate();
+			$validation = $field->validate($this->entity);
 			hypePrototyper()->prototype->setFieldValidationStatus($this->action, $field->getShortname(), $validation);
 
 			if (!$validation->isValid()) {

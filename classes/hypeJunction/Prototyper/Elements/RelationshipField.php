@@ -57,7 +57,7 @@ class RelationshipField extends Field {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function validate() {
+	public function validate(\ElggEntity $entity) {
 
 		$validation = new ValidationStatus();
 
@@ -69,7 +69,7 @@ class RelationshipField extends Field {
 
 		if (is_array($value)) {
 			foreach ($value as $val) {
-				$validation = $this->applyValidationRules($val, $validation);
+				$validation = $this->applyValidationRules($val, $validation, $entity);
 			}
 		}
 

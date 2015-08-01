@@ -18,6 +18,14 @@
 				$parent.fadeOut().remove();
 			}
 		});
+		
+		
+		// images js
+		$('.prototyper-image-preview a .elgg-icon-delete').live('click', function() {
+			if (confirm(elgg.echo('question:areyousure'))) {
+				$(this).parents('.prototyper-image-preview').eq(0).remove();
+			}
+		});
 	};
 
 	elgg.register_hook_handler('init', 'system', elgg.prototyper.init);

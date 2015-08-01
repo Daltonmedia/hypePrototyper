@@ -1,35 +1,15 @@
 /*
-Syntax error: File to import not found or unreadable: ../../../../../../mod/hypeUI/sass/global/variables.
-              Load paths:
-                D:/wamp/www/Arck/simplur/mod/hypePrototyper/sass
-                d:/tools/ruby/lib/ruby/gems/2.2.0/gems/compass-0.12.6/frameworks/blueprint/stylesheets
-                d:/tools/ruby/lib/ruby/gems/2.2.0/gems/compass-0.12.6/frameworks/compass/stylesheets
-                Compass::SpriteImporter
+Syntax error: Invalid CSS after "...ss css3 helpers": expected selector or at-rule, was "<<<<<<< HEAD"
         on line 2 of D:/wamp/www/Arck/simplur/mod/hypePrototyper/sass/css/framework/prototyper/stylesheet.scss
 
 1: D:/wamp/www/Arck/simplur/mod/hypePrototyper/sass/css/framework/prototyper/stylesheet.scss
 
 Backtrace:
 D:/wamp/www/Arck/simplur/mod/hypePrototyper/sass/css/framework/prototyper/stylesheet.scss:2
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/import_node.rb:67:in `rescue in import'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/import_node.rb:45:in `import'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/import_node.rb:28:in `imported_file'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/import_node.rb:37:in `css_import?'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/perform.rb:217:in `visit_import'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/base.rb:37:in `visit'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/perform.rb:100:in `visit'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/base.rb:53:in `map'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/base.rb:53:in `visit_children'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/perform.rb:109:in `block in visit_children'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/perform.rb:121:in `with_environment'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/perform.rb:108:in `visit_children'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/base.rb:37:in `block in visit'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/perform.rb:128:in `visit_root'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/base.rb:37:in `visit'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/perform.rb:100:in `visit'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/visitors/perform.rb:7:in `visit'
-d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/tree/root_node.rb:20:in `render'
+d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/scss/parser.rb:1147:in `expected'
+d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/scss/parser.rb:1085:in `expected'
+d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/scss/parser.rb:28:in `parse'
+d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/engine.rb:342:in `_to_tree'
 d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/engine.rb:315:in `_render'
 d:/tools/ruby/lib/ruby/gems/2.2.0/gems/sass-3.2.19/lib/sass/engine.rb:262:in `render'
 d:/tools/ruby/lib/ruby/gems/2.2.0/gems/compass-0.12.6/lib/compass/compiler.rb:139:in `block (2 levels) in compile'
@@ -73,4 +53,4 @@ d:/tools/ruby/bin/compass:23:in `<main>'
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: File to import not found or unreadable: ../../../../../../mod/hypeUI/sass/global/variables.\A               Load paths:\A                 D:/wamp/www/Arck/simplur/mod/hypePrototyper/sass\A                 d:/tools/ruby/lib/ruby/gems/2.2.0/gems/compass-0.12.6/frameworks/blueprint/stylesheets\A                 d:/tools/ruby/lib/ruby/gems/2.2.0/gems/compass-0.12.6/frameworks/compass/stylesheets\A                 Compass::SpriteImporter\A         on line 2 of D:/wamp/www/Arck/simplur/mod/hypePrototyper/sass/css/framework/prototyper/stylesheet.scss\A \A 1: D:/wamp/www/Arck/simplur/mod/hypePrototyper/sass/css/framework/prototyper/stylesheet.scss"; }
+  content: "Syntax error: Invalid CSS after \"...ss css3 helpers\": expected selector or at-rule, was \"<<<<<<< HEAD\"\A         on line 2 of D:/wamp/www/Arck/simplur/mod/hypePrototyper/sass/css/framework/prototyper/stylesheet.scss\A \A 1: D:/wamp/www/Arck/simplur/mod/hypePrototyper/sass/css/framework/prototyper/stylesheet.scss"; }

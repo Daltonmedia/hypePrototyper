@@ -343,6 +343,12 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 		}
 
 		$vars = (array) $this->input_vars;
+
+		$clean = array('ui_sections', 'relationship', 'inverse_relationship', 'bilateral');
+		foreach ($clean as $key) {
+			unset($vars[$key]);
+		}
+		
 		return elgg_trigger_plugin_hook('input_vars', 'prototyper', array(
 			'field' => $this,
 			'entity' => $entity,
@@ -454,7 +460,7 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 	/**
 	 * {@inheritdoc}
 	 */
-	public function applyValidationRules($value = '', ValidationStatus $validation = null) {
+	public function applyValidationRules($value = '', ValidationStatus $validation = null, \ElggEntity $entity = null) {
 
 		if (!$validation instanceof ValidationStatus) {
 			$validation = new ValidationStatus;
@@ -468,6 +474,7 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 					'field' => $this,
 					'value' => $value,
 					'expectation' => $expectation,
+					'entity' => $entity,
 						), $validation);
 
 				if (!$validation instanceof ValidationStatus) {

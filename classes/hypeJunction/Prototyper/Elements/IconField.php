@@ -16,17 +16,6 @@ class IconField extends Field {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function isRequired() {
-		$entity = $entity;
-		if ($entity->icontime) {
-			return false;
-		}
-		return parent::isRequired();
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
 	public function isMultiple() {
 		return false;
 	}
@@ -41,7 +30,7 @@ class IconField extends Field {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function validate() {
+	public function validate(\ElggEntity $entity) {
 
 		$shortname = $this->getShortname();
 		$validation = new ValidationStatus();
@@ -51,7 +40,7 @@ class IconField extends Field {
 
 		$has_uploaded_file = ($error_type != UPLOAD_ERR_NO_FILE);
 		if (!$has_uploaded_file) {
-			if ($this->isRequired()) {
+			if ($this->isRequired() && !$entity->icontime) {
 				$validation->setFail(elgg_echo('prototyper:validate:error:required', array($this->getLabel())));
 			}
 		} else {
@@ -59,7 +48,7 @@ class IconField extends Field {
 			if ($error) {
 				$validation->setFail($error);
 			} else {
-				$validation = $this->applyValidationRules($value, $validation);
+				$validation = $this->applyValidationRules($value, $validation, $entity);
 			}
 		}
 
