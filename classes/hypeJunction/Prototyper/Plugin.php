@@ -179,7 +179,7 @@ final class Plugin extends \hypeJunction\Plugin {
 		));
 
 		hypePrototyper()->config->registerType('userpicker', Elements\RelationshipField::CLASSNAME, array(
-			'value_type' => 'entity',
+			'value_type' => 'guid',
 			'inverse_relationship' => false,
 			'bilateral' => false,
 			'multiple' => false,
@@ -192,7 +192,7 @@ final class Plugin extends \hypeJunction\Plugin {
 		));
 
 		hypePrototyper()->config->registerType('friendspicker', Elements\RelationshipField::CLASSNAME, array(
-			'value_type' => 'entity',
+			'value_type' => 'guid',
 			'inverse_relationship' => false,
 			'bilateral' => false,
 			'multiple' => false,
@@ -206,7 +206,7 @@ final class Plugin extends \hypeJunction\Plugin {
 
 		if (elgg_is_active_plugin('hypeCategories')) {
 			hypePrototyper()->config->registerType('category', Elements\CategoryField::CLASSNAME, array(
-				'value_type' => 'entity',
+				'value_type' => 'guid',
 				'inverse_relationship' => false,
 				'bilateral' => false,
 				'multiple' => true,
