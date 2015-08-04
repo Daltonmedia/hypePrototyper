@@ -42,7 +42,7 @@ class CategoryField extends RelationshipField {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getDataType() {
+	public static function getDataType() {
 		return 'category';
 	}
 
