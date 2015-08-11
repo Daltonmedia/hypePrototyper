@@ -3,7 +3,7 @@
 
 	<name>hypePrototyper</name>
 	<id>hypePrototyper</id>
-	<version>4.0.0</version>
+	<version type="dist">4.0.0</version>
 
 	<description>Entity prototyping</description>
 	<category>developers</category>
