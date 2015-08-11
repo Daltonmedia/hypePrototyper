@@ -114,7 +114,32 @@ class UI {
 				$v_expectation = $validation['expectation'][$i];
 				$validation_rules[$v_rule] = $v_expectation;
 			}
-			
+
+			$icon_sizes = array();
+			$icon_sizes_conf = elgg_extract('data-icon-sizes', $options);
+			$system_icon_sizes = array_keys((array) $icon_sizes_conf);
+			if (is_array($icon_sizes_conf) && !empty($icon_sizes_conf)) {
+				$keys = array_keys($icon_sizes_conf['name']);
+				foreach ($keys as $key) {
+					$name = $icon_sizes_conf['name'][$key];
+					$w = (int) $icon_sizes_conf['w'][$key];
+					$h = (int) $icon_sizes_conf['h'][$key];
+					if (!$name || !$w || !$h || in_array($name, $system_icon_sizes)) {
+						continue;
+					}
+					$icon_sizes[$name] = array(
+						'name' => $name,
+						'w' => $w,
+						'h' => $h,
+						'square' => ($w / $h) === 1,
+						'upscale' => true,
+						'croppable' => true,
+						'metadata_name' => "{$name}_icon",
+					);
+				}
+			}
+			unset($options['data-icon-sizes']);
+
 			$temp[$shortname] = array(
 				'type' => $input_type,
 				'data_type' => $data_type,
@@ -130,6 +155,7 @@ class UI {
 				'priority' => $priority,
 				'options_values' => (!empty($options_values_config)) ? $options_values_config : null,
 				'validation_rules' => array_filter($validation_rules),
+				'data-icon-sizes' => $icon_sizes,
 			);
 
 			if (in_array($input_type, array('checkboxes', 'radio'))) {

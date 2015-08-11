@@ -17,70 +17,77 @@ class ImageUploadField extends UploadField {
 			return $result;
 		}
 
+		// make sure we do not duplicate icon creation
+		elgg_register_plugin_hook_handler('entity:icon:sizes', 'object', array($this, 'getIconSizes'), 999);
+
 		$shortname = $this->getShortname();
 
-		$image_upload_crop_coords = (array) get_input('image_upload_crop_coords', array());
-		$coords = (array) elgg_extract($shortname, $image_upload_crop_coords);
-
-		$x1 = (int) elgg_extract('x1', $coords);
-		$x2 = (int) elgg_extract('x2', $coords);
-		$y1 = (int) elgg_extract('y1', $coords);
-		$y2 = (int) elgg_extract('y2', $coords);
-
-		if ($x2 <= $x1 || $y2 <= $y1) {
+		$icon_sizes = (array) $this->input_vars->{"data-icon-sizes"};
+		if (empty($icon_sizes)) {
 			return $result;
 		}
 
-		$cropW = $this->input_vars->{"data-crop-ratio-w"};
-		$cropH = $this->input_vars->{"data-crop-ratio-h"};
-		$ratio = (int) $cropW / (int) $cropH;
-
-		$large = $this->input_vars->{"data-crop-large-w"};
-		$medium = $this->input_vars->{"data-crop-medium-w"};
-		$small = $this->input_vars->{"data-crop-small-w"};
-
-		list($master_width, $master_height) = getimagesize($_FILES[$shortname]['tmp_name']);
+		$upload = $this->getValues($entity);
 		
-		$options = array(
-			'icon_sizes' => array(
-				'_small' => array(
-					'w' => (int) $small,
-					'h' => (int) round($small / $ratio),
-					'square' => $ratio === 1,
-					'upscale' => true,
-					'croppable' => true,
-					'metadata_name' => '_small_icon',
+		$image_upload_crop_coords = (array) get_input('image_upload_crop_coords', array());
+		$ratio_coords = (array) elgg_extract($shortname, $image_upload_crop_coords, array());
+		foreach ($icon_sizes as $icon_size) {
+			$ratio = (int) $icon_size['w'] / (int) $icon_size['h'];
+			$coords = $ratio_coords[(string) $ratio];
+			
+			$x1 = (int) elgg_extract('x1', $coords);
+			$x2 = (int) elgg_extract('x2', $coords);
+			$y1 = (int) elgg_extract('y1', $coords);
+			$y2 = (int) elgg_extract('y2', $coords);
+
+			if ($x2 <= $x1 || $y2 <= $y1) {
+				continue;
+			}
+
+			list($master_width, $master_height) = getimagesize($_FILES[$shortname]['tmp_name']);
+
+			$options = array(
+				'icon_sizes' => array(
+					$icon_size['name'] => $icon_size,
 				),
-				'_medium' => array(
-					'w' => (int) $medium,
-					'h' => (int) round($medium / $ratio),
-					'square' => $ratio === 1,
-					'upscale' => true,
-					'croppable' => true,
-					'metadata_name' => '_medium_icon',
-				),
-				'_large' => array(
-					'w' => (int) $large,
-					'h' => (int) round($large / $ratio),
-					'square' => $ratio === 1,
-					'upscacle' => true,
-					'croppable' => true,
-					'metadata_name' => '_large_icon',
+				'coords' => array(
+					'x1' => $x1,
+					'x2' => $x2,
+					'y1' => $y1,
+					'y2' => $y2,
+					'master_width' => $master_width,
+					'master_height' => $master_height,
 				)
-			),
-			'coords' => array(
-				'x1' => $x1,
-				'x2' => $x2,
-				'y1' => $y1,
-				'y2' => $y2,
-				'master_width' => $master_width,
-				'master_height' => $master_height,
-			)
-		);
+			);
 
-		hypeApps()->iconFactory->create($this->getValues($entity), $_FILES[$shortname]['tmp_name'], $options);
+			foreach (array('x1', 'x2', 'y1', 'y2') as $c) {
+				$entity->{"_coord_{$ratio}_{$coord}"} = elgg_extract($c, $coords);
+			}
+			
+			hypeApps()->iconFactory->create($upload, $_FILES[$shortname]['tmp_name'], $options);
+		}
 		
+		elgg_unregister_plugin_hook_handler('entity:icon:sizes', 'object', array($this, 'getIconSizes'));
+
 		return $result;
+	}
+
+	/**
+	 * Callback for icon size hook
+	 * We do not want to regenerate default icons
+	 *
+	 * @param string $hook   "entity:icon:sizes"
+	 * @param string $type   "object"
+	 * @param array  $return Sizes
+	 * @return array
+	 */
+	public function getIconSizes($hook, $type, $return) {
+		foreach ($return as $key => $val) {
+			if (in_array($key, array_keys((array) elgg_get_config('icon_sizes')))) {
+				unset($return[$key]);
+			}
+		}
+		return $return;
 	}
 
 }
