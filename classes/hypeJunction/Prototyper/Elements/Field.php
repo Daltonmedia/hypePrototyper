@@ -315,7 +315,6 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 	 * {@inheritdoc}
 	 */
 	public function isHiddenOnProfile() {
-		var_dump($this->hide_on_profile);
 		return ($this->hide_on_profile);
 	}
 	/**
