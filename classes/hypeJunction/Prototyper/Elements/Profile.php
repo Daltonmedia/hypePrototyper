@@ -69,6 +69,10 @@ class Profile {
 				continue;
 			}
 
+			if ($field->isHiddenOnProfile()) {
+				continue;
+			}
+			
 			$field_view = $field->viewOutput($vars);
 			if ($field_view) {
 				$output .= elgg_format_element('div', array(

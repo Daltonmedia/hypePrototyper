@@ -89,6 +89,12 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 	protected $admin_only;
 
 	/**
+	 * Hide on profile
+	 * @var boolean 
+	 */
+	protected $hide_on_profile;
+
+	/**
 	 * Value passed to the input
 	 * @var mixed
 	 */
@@ -305,6 +311,12 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 		return ($this->admin_only);
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function isHiddenOnProfile() {
+		return ($this->hide_on_profile);
+	}
 	/**
 	 * {@inheritdoc}
 	 */

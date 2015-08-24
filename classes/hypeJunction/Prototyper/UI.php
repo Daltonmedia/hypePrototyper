@@ -74,6 +74,7 @@ class UI {
 			$required = (bool) elgg_extract('required', $options, false);
 			$multiple = (bool) elgg_extract('multiple', $options, false);
 			$admin_only = (bool) elgg_extract('admin_only', $options, false);
+			$hidden_on_profile = (bool) elgg_extract('hidden_on_profile', $options, false);
 			$show_access = (bool) elgg_extract('show_access', $options, false);
 
 			$relationship = elgg_extract('relationship', $options, array());
@@ -145,6 +146,7 @@ class UI {
 				'data_type' => $data_type,
 				'required' => $required,
 				'admin_only' => $admin_only,
+				'hidden_on_profile' => $hidden_on_profile,
 				'multiple' => $multiple,
 				'show_access' => $show_access,
 				'inverse_relationship' => $inverse_relationship,

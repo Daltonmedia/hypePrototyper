@@ -220,6 +220,7 @@ with the following properties:
 * ```output_view``` - view used to dipslay an output, if different from "output/$type"
 * ```required``` - whether or not a user input is requried (default ```false```)
 * ```admin_only``` - whether or not the field is only visible to admins (default ```false```)
+* ```hide_on_profile``` - whether or not the field should be hidden on automatically generated profile (default ```false```)
 * ```priority``` - order of the field (default ```500```)
 * ```show_access``` - whether or not to display an access input (default ```false```)
 	This allows users to specify an access level for the metadata, annotation or attachment created

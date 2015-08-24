@@ -85,6 +85,12 @@ interface FieldProperties {
 	public function isAdminOnly();
 
 	/**
+	 * Is this field hidden from profile
+	 * @return boolean
+	 */
+	public function isHiddenOnProfile();
+
+	/**
 	 * Allow cloning of the field
 	 * @return boolean
 	 */
