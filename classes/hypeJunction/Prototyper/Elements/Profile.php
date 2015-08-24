@@ -69,6 +69,8 @@ class Profile {
 				continue;
 			}
 
+			var_dump($field->isHiddenOnProfile());
+			
 			if ($field->isHiddenOnProfile()) {
 				continue;
 			}
