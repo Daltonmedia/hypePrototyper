@@ -51,7 +51,7 @@ class Form {
 	 * @return string
 	 */
 	public function viewBody() {
-		
+
 		// Get sticky values
 		$sticky_values = hypePrototyper()->prototype->getStickyValues($this->action);
 		hypePrototyper()->prototype->clearStickyValues($this->action);
@@ -88,6 +88,14 @@ class Form {
 
 			$i++;
 		}
+
+		$submit = elgg_view('input/submit', array(
+			'value' => elgg_echo('save')
+		));
+
+		$output .= elgg_format_element('div', array(
+			'class' => 'elgg-foot',
+				), $submit);
 
 		return $output;
 	}

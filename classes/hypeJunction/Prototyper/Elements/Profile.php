@@ -57,7 +57,7 @@ class Profile {
 		$output = '';
 
 		$vars['entity'] = $this->entity;
-		
+
 		foreach ($this->fields as $field) {
 			if (!$field instanceof Field) {
 				continue;
@@ -72,7 +72,7 @@ class Profile {
 			if ($field->isHiddenOnProfile()) {
 				continue;
 			}
-			
+
 			$field_view = $field->viewOutput($vars);
 			if ($field_view) {
 				$output .= elgg_format_element('div', array(
