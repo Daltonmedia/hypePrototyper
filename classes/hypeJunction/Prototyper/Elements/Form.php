@@ -143,7 +143,7 @@ class Form {
 			if (!$field instanceof Field) {
 				continue;
 			}
-			if ($field->getType() == 'file' || $field->getValueType() == 'file') {
+			if ($field->getType() == 'file' || $field->getValueType() == 'file' || $field->getDataType()) {
 				return true;
 			}
 		}
