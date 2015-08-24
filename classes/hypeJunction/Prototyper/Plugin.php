@@ -98,6 +98,61 @@ final class Plugin extends \hypeJunction\Plugin {
 			elgg_register_js('prototyper', elgg_get_simplecache_url('js', 'framework/legacy/prototyper'), 'footer');
 		}
 
+		hypePrototyper()->config->registerType('title', Elements\AttributeField::CLASSNAME, array(
+			'shortname' => 'title',
+			'input_view' => 'input/text',
+			'output_view' => 'output/text',
+			'value_type' => 'text',
+			'show_access' => false,
+			'multiple' => false,
+			'required' => true,
+			'ui_sections' => array(
+				'multiple' => false,
+				'access' => false,
+			)
+		));
+		hypePrototyper()->config->registerType('name', Elements\AttributeField::CLASSNAME, array(
+			'shortname' => 'name',
+			'input_view' => 'input/text',
+			'output_view' => 'output/text',
+			'value_type' => 'text',
+			'show_access' => false,
+			'multiple' => false,
+			'required' => true,
+			'ui_sections' => array(
+				'multiple' => false,
+				'access' => false,
+			)
+		));
+
+		hypePrototyper()->config->registerType('description', Elements\AttributeField::CLASSNAME, array(
+			'shortname' => 'description',
+			'input_view' => 'input/longtext',
+			'output_view' => 'output/longtext',
+			'value_type' => 'text',
+			'show_access' => false,
+			'multiple' => false,
+			'ui_sections' => array(
+				'multiple' => false,
+				'access' => false,
+			)
+		));
+
+		hypePrototyper()->config->registerType('access', Elements\AttributeField::CLASSNAME, array(
+			'shortname' => 'access_id',
+			'value' => get_default_access(),
+			'input_view' => 'input/access',
+			'input_view' => 'output/access',
+			'value_type' => 'integer',
+			'show_access' => false,
+			'multiple' => false,
+			'required' => true,
+			'ui_sections' => array(
+				'multiple' => false,
+				'access' => false,
+			)
+		));
+
 		hypePrototyper()->config->registerType('text', Elements\MetadataField::CLASSNAME);
 		hypePrototyper()->config->registerType('text', Elements\AnnotationField::CLASSNAME);
 

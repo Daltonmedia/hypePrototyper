@@ -28,7 +28,7 @@ class UI {
 	 */
 	public function getTemplate($data_type, $type) {
 		$options = (array) $this->config->getType($data_type, $type);
-		return new UI\Template($data_type, $type, elgg_extract('ui_sections', $options, array()));
+		return new UI\Template($data_type, $type, $options);
 	}
 
 	/**
@@ -36,14 +36,11 @@ class UI {
 	 * @return array
 	 */
 	public function getTemplates() {
-		$tempates = array();
+		$templates = array();
 		$types = $this->config->getTypes();
 		foreach ($types as $type => $type_options) {
-			if ($type == 'attribute') {
-				continue;
-			}
 			foreach ($type_options as $subtype => $subtype_options) {
-				$templates[$type][$subtype] = elgg_extract('ui_sections', $subtype_options, array());
+				$templates[$type][$subtype] = (array) $subtype_options;
 			}
 		}
 		return $templates;
@@ -56,7 +53,6 @@ class UI {
 	public function buildPrototypeFromInput() {
 		$language = $this->config->get('default_language', 'en');
 
-		$attribute = get_input('attribute', array());
 		$field = get_input('field', array());
 		$temp = array();
 
@@ -170,31 +166,10 @@ class UI {
 
 		$fields = array();
 
-		$title = elgg_extract('title', $attribute);
-		$description = elgg_extract('description', $attribute);
-		$access_id = elgg_extract('access_id', $attribute);
-
-		if ($title && !array_key_exists('title', $temp)) {
-			$fields['title'] = array(
-				'required' => true,
-			);
-		}
-		if ($description && !array_key_exists('description', $temp)) {
-			$fields['description'] = array(
-				'type' => 'longtext',
-			);
-		}
-
 		foreach ($temp as $shortname => $options) {
 			$fields[$shortname] = $options;
 		}
 
-		if ($access_id && !array_key_exists('access_id', $temp)) {
-			$fields['access_id'] = array(
-				'type' => 'access',
-			);
-		}
-		
 		return $fields;
 	}
 
