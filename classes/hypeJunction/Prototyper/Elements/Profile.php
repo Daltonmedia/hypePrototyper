@@ -68,8 +68,6 @@ class Profile {
 			if ($field->getType() == 'hidden' || $field->getValueType() == 'hidden') {
 				continue;
 			}
-
-			var_dump($field->isHiddenOnProfile());
 			
 			if ($field->isHiddenOnProfile()) {
 				continue;
