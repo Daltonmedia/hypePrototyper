@@ -88,9 +88,9 @@
 .prototyper-row [class*="prototyper-col"] { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
 
 .prototyper-fieldset * { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
-.prototyper-fieldset.has-legend { padding: 15px; border: 1px solid #c3c3c3; margin: 15px 0; }
+.prototyper-fieldset.has-legend { padding: 15px; border: 1px solid #cccccc; margin: 15px 0; }
 .prototyper-fieldset.has-legend legend { font-size: 110%; }
-.elgg-form .prototyper-fieldset { font-size: 13px; -webkit-box-shadow: 0 0 3px #c3c3c3; -moz-box-shadow: 0 0 3px #c3c3c3; box-shadow: 0 0 3px #c3c3c3; padding: 0; margin: 0 0 15px; }
+.elgg-form .prototyper-fieldset { font-size: 13px; -webkit-box-shadow: 0 0 3px #cccccc; -moz-box-shadow: 0 0 3px #cccccc; box-shadow: 0 0 3px #cccccc; padding: 0; margin: 0 0 15px; }
 .prototyper-fieldset > .elgg-head { *zoom: 1; padding: 10px 0; margin: 0; background: #f4f4f4; border-bottom: 1px solid #ccc; }
 .prototyper-fieldset > .elgg-head:before, .prototyper-fieldset > .elgg-head:after { content: " "; display: table; }
 .prototyper-fieldset > .elgg-head:after { clear: both; }
@@ -112,11 +112,11 @@
 .prototyper-fieldset .prototyper-validation-error, .prototyper-fieldset .parsley-errors-list { padding-left: 25px; list-style: circle; color: red; margin: 0; font-size: 13px; line-height: normal; }
 .prototyper-fieldset .prototyper-validation-error > li, .prototyper-fieldset .parsley-errors-list > li { margin: 5px 0; padding: 0; }
 
-.elgg-icon.elgg-icon-prototyper-question { background: none; display: inline-block; font-family: 'FontAwesome'; font-style: normal; font-weight: normal; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.elgg-icon.elgg-icon-prototyper-question { background: none; display: inline-block; font-family: FontAwesome; font-style: normal; font-weight: normal; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 .elgg-icon.elgg-icon-prototyper-question:after { content: "\f128"; }
-.elgg-icon.elgg-icon-prototyper-round-plus { background: none; display: inline-block; font-family: 'FontAwesome'; font-style: normal; font-weight: normal; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.elgg-icon.elgg-icon-prototyper-round-plus { background: none; display: inline-block; font-family: FontAwesome; font-style: normal; font-weight: normal; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 .elgg-icon.elgg-icon-prototyper-round-plus:after { content: "\f055"; }
-.elgg-icon.elgg-icon-prototyper-round-minus { background: none; display: inline-block; font-family: 'FontAwesome'; font-style: normal; font-weight: normal; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.elgg-icon.elgg-icon-prototyper-round-minus { background: none; display: inline-block; font-family: FontAwesome; font-style: normal; font-weight: normal; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 .elgg-icon.elgg-icon-prototyper-round-minus:after { content: "\f056"; }
 
 .prototyper-output { padding: 10px 0; }
@@ -125,3 +125,7 @@
 .prototyper-output > div > .prototyper-label { padding: 5px; border-bottom: 1px solid #eee; }
 .prototyper-output > div > .elgg-output { padding: 5px; }
 .prototyper-output .elgg-tags { padding: 0; list-style: none; }
+
+.prototyper-image-upload-cropper .elgg-text-help { display: none; margin: 0; }
+.prototyper-image-upload-cropper.prototyper-has-preview { padding: 15px; }
+.prototyper-image-upload-cropper.prototyper-has-preview .elgg-text-help { display: block; }

@@ -12,6 +12,8 @@ $english = array(
 	'prototyper:action:success' => 'Requested action was successfully completed',
 
 	'prototyper:settings:default_language' => 'Default language',
+
+	'prototyper:ui:cropper_instructions' => 'Select an area of your image to crop',
 );
 
 add_translation('en', $english);

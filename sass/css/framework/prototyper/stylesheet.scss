@@ -183,3 +183,16 @@ $cols : (1,2,3,4,5,6,7,8,9,10,11,12);
 		list-style: none;
 	}
 }
+
+.prototyper-image-upload-cropper {
+	.elgg-text-help {
+		display: none;
+		margin: 0;
+	}
+	&.prototyper-has-preview {
+		padding: 15px;
+		.elgg-text-help {
+			display: block;
+		}
+	}
+}
