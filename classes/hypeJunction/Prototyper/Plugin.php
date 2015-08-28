@@ -294,7 +294,7 @@ final class Plugin extends \hypeJunction\Plugin {
 			'multiple' => false,
 			'show_access' => false,
 			'input_view' => 'input/file',
-			'output_view' => false,
+			'output_view' => 'icon/default',
 			'ui_sections' => array(
 				'value' => false,
 				'access' => false,
@@ -317,6 +317,7 @@ final class Plugin extends \hypeJunction\Plugin {
 		hypePrototyper()->config->registerType('image_upload', Elements\ImageUploadField::CLASSNAME, array(
 			'multiple' => false,
 			'accept' => 'image/*',
+			'value_type' => 'image',
 			'show_access' => false,
 			'input_view' => 'input/file',
 			'validation_rules' => array(

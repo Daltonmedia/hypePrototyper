@@ -2,7 +2,7 @@
 
 namespace hypeJunction\Prototyper\Elements;
 
-class IconField extends Field {
+class IconField extends UploadField {
 
 	const CLASSNAME = __CLASS__;
 
@@ -16,93 +16,63 @@ class IconField extends Field {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function isMultiple() {
-		return false;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function hasAccessInput() {
-		return false;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function validate(\ElggEntity $entity) {
-
-		$shortname = $this->getShortname();
-		$validation = new ValidationStatus();
-
-		$value = $_FILES[$shortname];
-		$error_type = elgg_extract('error', $value);
-
-		$has_uploaded_file = ($error_type != UPLOAD_ERR_NO_FILE);
-		if (!$has_uploaded_file) {
-			if ($this->isRequired() && !$entity->icontime) {
-				$validation->setFail(elgg_echo('prototyper:validate:error:required', array($this->getLabel())));
-			}
-		} else {
-			$error = hypeApps()->uploader->getFriendlyUploadError($error_type);
-			if ($error) {
-				$validation->setFail($error);
-			} else {
-				$validation = $this->applyValidationRules($value, $validation, $entity);
-			}
-		}
-
-		return $validation;
-	}
-
-	/**
+/**
 	 * {@inheritdoc}
 	 */
 	public function handle(\ElggEntity $entity) {
 
 		$shortname = $this->getShortname();
-		$future_value = $_FILES[$shortname];
 
-		$value = $_FILES[$shortname];
-		$error_type = elgg_extract('error', $value);
+		$icon_sizes = hypeApps()->iconFactory->getSizes($entity);
+		$custom_icon_sizes = (array) $this->input_vars->{"icon_sizes"};
+		$icon_sizes = array_merge($icon_sizes, $custom_icon_sizes);
 
-		$has_uploaded_file = ($error_type != UPLOAD_ERR_NO_FILE);
-
-		if (!$has_uploaded_file) {
+		if (empty($icon_sizes)) {
 			return $entity;
 		}
 
-		$params = array(
-			'field' => $this,
-			'entity' => $entity,
-			'icon_name' => $shortname,
-			'future_value' => $future_value,
-		);
+		$image_upload_crop_coords = (array) get_input('image_upload_crop_coords', array());
+		$ratio_coords = (array) elgg_extract($shortname, $image_upload_crop_coords, array());
+		foreach ($icon_sizes as $icon_size) {
+			$ratio = (int) $icon_size['w'] / (int) $icon_size['h'];
+			$coords = $ratio_coords[(string) $ratio];
 
-		// Allow plugins to prevent icons from being uploaded
-		if (!elgg_trigger_plugin_hook('handle:icon:before', 'prototyper', $params, true)) {
-			return $entity;
+			$x1 = (int) elgg_extract('x1', $coords);
+			$x2 = (int) elgg_extract('x2', $coords);
+			$y1 = (int) elgg_extract('y1', $coords);
+			$y2 = (int) elgg_extract('y2', $coords);
+
+			if ($x2 <= $x1 || $y2 <= $y1) {
+				continue;
+			}
+
+			list($master_width, $master_height) = getimagesize($_FILES[$shortname]['tmp_name']);
+
+			$options = array(
+				'icon_sizes' => array(
+					$icon_size['name'] => $icon_size,
+				),
+				'coords' => array(
+					'x1' => $x1,
+					'x2' => $x2,
+					'y1' => $y1,
+					'y2' => $y2,
+					'master_width' => $master_width,
+					'master_height' => $master_height,
+				)
+			);
+
+			foreach (array('x1', 'x2', 'y1', 'y2') as $c) {
+				$entity->{"_coord_{$ratio}_{$coord}"} = elgg_extract($c, $coords);
+				if ($ratio === 1) {
+					$entity->$c = elgg_extract($c, $coords);
+				}
+			}
+
+			hypeApps()->iconFactory->create($entity, $_FILES[$shortname]['tmp_name'], $options);
 		}
-
-		$result = hypeApps()->iconFactory->create($entity, elgg_extract('tmp_name', $value));
-
-		$params = array(
-			'field' => $this,
-			'entity' => $entity,
-			'icon_name' => $shortname,
-			'value' => $future_value,
-		);
-
-		elgg_trigger_plugin_hook('handle:icon:after', 'prototyper', $params, $result);
 
 		return $entity;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public static function getDataType() {
-		return 'icon';
 	}
 
 }

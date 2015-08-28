@@ -6,6 +6,11 @@ if (!$field instanceof hypeJunction\Prototyper\Elements\UploadField) {
 	return;
 }
 
+if ($field->getType() == 'icon') {
+	echo elgg_view('prototyper/input/icon', $vars);
+	return;
+}
+
 $name = $field->getShortname();
 
 if (!$entity || !$name) {

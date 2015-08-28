@@ -201,6 +201,11 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 				}
 				$this->flags = $value;
 				break;
+
+			case 'data-icon-sizes':
+				// added for BC
+				$this->input_vars->icon_sizes = $value;
+				break;
 		}
 	}
 

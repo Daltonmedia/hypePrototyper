@@ -11,23 +11,25 @@ class ImageUploadField extends UploadField {
 	 */
 	public function handle(\ElggEntity $entity) {
 
-		$result = parent::handle($entity);
-
-		if (!$result) {
-			return $result;
-		}
-
 		// make sure we do not duplicate icon creation
 		elgg_register_plugin_hook_handler('entity:icon:sizes', 'object', array($this, 'getIconSizes'), 999);
+		$result = parent::handle($entity);
+		elgg_unregister_plugin_hook_handler('entity:icon:sizes', 'object', array($this, 'getIconSizes'));
 
-		$shortname = $this->getShortname();
-
-		$icon_sizes = (array) $this->input_vars->{"data-icon-sizes"};
-		if (empty($icon_sizes)) {
-			return $result;
+		if (!$result) {
+			return $entity;
 		}
 
+		$shortname = $this->getShortname();
 		$upload = $this->getValues($entity);
+
+		$icon_sizes = hypeApps()->iconFactory->getSizes($upload);
+		$custom_icon_sizes = (array) $this->input_vars->{"icon_sizes"};
+		$icon_sizes = array_merge($icon_sizes, $custom_icon_sizes);
+		
+		if (empty($icon_sizes)) {
+			return $entity;
+		}
 		
 		$image_upload_crop_coords = (array) get_input('image_upload_crop_coords', array());
 		$ratio_coords = (array) elgg_extract($shortname, $image_upload_crop_coords, array());
@@ -61,15 +63,17 @@ class ImageUploadField extends UploadField {
 			);
 
 			foreach (array('x1', 'x2', 'y1', 'y2') as $c) {
-				$entity->{"_coord_{$ratio}_{$coord}"} = elgg_extract($c, $coords);
+				$upload->{"_coord_{$ratio}_{$coord}"} = elgg_extract($c, $coords);
+				if ($ratio === 1) {
+					$upload->$c = elgg_extract($c, $coords);
+				}
 			}
-			
 			hypeApps()->iconFactory->create($upload, $_FILES[$shortname]['tmp_name'], $options);
 		}
 		
-		elgg_unregister_plugin_hook_handler('entity:icon:sizes', 'object', array($this, 'getIconSizes'));
-
-		return $result;
+		$upload->icontime = time();
+		
+		return $entity;
 	}
 
 	/**
@@ -82,12 +86,7 @@ class ImageUploadField extends UploadField {
 	 * @return array
 	 */
 	public function getIconSizes($hook, $type, $return) {
-		foreach ($return as $key => $val) {
-			if (in_array($key, array_keys((array) elgg_get_config('icon_sizes')))) {
-				unset($return[$key]);
-			}
-		}
-		return $return;
+		return array();
 	}
 
 }

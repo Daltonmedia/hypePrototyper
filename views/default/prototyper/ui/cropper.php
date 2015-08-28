@@ -2,7 +2,7 @@
 
 $entity = elgg_extract('entity', $vars);
 $name = elgg_extract('name', $vars);
-$icon_sizes = elgg_extract('data-icon-sizes', $vars);
+$icon_sizes = elgg_extract('icon_sizes', $vars);
 
 if (empty($icon_sizes)) {
 	return;

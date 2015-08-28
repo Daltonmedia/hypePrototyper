@@ -113,7 +113,7 @@ class UI {
 			}
 
 			$icon_sizes = array();
-			$icon_sizes_conf = elgg_extract('data-icon-sizes', $options);
+			$icon_sizes_conf = elgg_extract('icon_sizes', $options);
 			$system_icon_sizes = array_keys((array) $icon_sizes_conf);
 			if (is_array($icon_sizes_conf) && !empty($icon_sizes_conf)) {
 				$keys = array_keys($icon_sizes_conf['name']);
@@ -135,7 +135,7 @@ class UI {
 					);
 				}
 			}
-			unset($options['data-icon-sizes']);
+			unset($options['icon_sizes']);
 
 			$temp[$shortname] = array(
 				'type' => $input_type,
@@ -153,7 +153,7 @@ class UI {
 				'priority' => $priority,
 				'options_values' => (!empty($options_values_config)) ? $options_values_config : null,
 				'validation_rules' => array_filter($validation_rules),
-				'data-icon-sizes' => $icon_sizes,
+				'icon_sizes' => $icon_sizes,
 			);
 
 			if (in_array($input_type, array('checkboxes', 'radio'))) {

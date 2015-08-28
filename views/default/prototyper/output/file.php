@@ -21,10 +21,14 @@ if (!$upload instanceof ElggFile) {
 	return;
 }
 
-elgg_push_context('widgets');
-$vars['full_view'] = false;
-$output = elgg_view_entity($upload, $vars);
-elgg_pop_context();
+if ($value instanceof \ElggEntity) {
+	elgg_push_context('widgets');
+	$vars['full_view'] = false;
+	$output = elgg_view_entity($upload, $vars);
+	elgg_pop_context();
+} else if ($view) {
+	$output = elgg_view($view, $vars);
+}
 
 if (!$output) {
 	return;
