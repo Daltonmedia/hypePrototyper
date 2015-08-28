@@ -142,7 +142,7 @@ final class Plugin extends \hypeJunction\Plugin {
 			'shortname' => 'access_id',
 			'value' => get_default_access(),
 			'input_view' => 'input/access',
-			'input_view' => 'output/access',
+			'output_view' => 'output/access',
 			'value_type' => 'integer',
 			'show_access' => false,
 			'multiple' => false,
