@@ -13,7 +13,9 @@ class ImageUploadField extends UploadField {
 
 		// make sure we do not duplicate icon creation
 		elgg_register_plugin_hook_handler('entity:icon:sizes', 'object', array($this, 'getIconSizes'), 999);
+
 		$result = parent::handle($entity);
+
 		elgg_unregister_plugin_hook_handler('entity:icon:sizes', 'object', array($this, 'getIconSizes'));
 
 		if (!$result) {

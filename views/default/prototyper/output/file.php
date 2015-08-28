@@ -16,15 +16,11 @@ if (!$entity || !$name) {
 $label = $field->getLabel();
 $view = $field->getOutputView();
 
-$upload = $field->getValues($entity);
-if (!$upload instanceof ElggFile) {
-	return;
-}
-
+$value = $field->getValues($entity);
 if ($value instanceof \ElggEntity) {
 	elgg_push_context('widgets');
 	$vars['full_view'] = false;
-	$output = elgg_view_entity($upload, $vars);
+	$output = elgg_view_entity($value, $vars);
 	elgg_pop_context();
 } else if ($view) {
 	$output = elgg_view($view, $vars);
