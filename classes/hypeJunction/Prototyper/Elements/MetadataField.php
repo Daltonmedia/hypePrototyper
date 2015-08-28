@@ -165,7 +165,9 @@ class MetadataField extends Field {
 			$id = $future_metadata['id'][$i];
 			$name = $future_metadata['name'][$i];
 			$value = $future_metadata['value'][$i];
-			if ($this->getValueType() == 'tags') {
+			$value_type = $this->getValueType();
+			$input_type = $this->getType();
+			if ($value_type == 'tags' || (!$value_type && $input_type == 'tags')) {
 				$value = string_to_tag_array($value);
 			}
 			$access_id = $future_metadata['access_id'][$i];
