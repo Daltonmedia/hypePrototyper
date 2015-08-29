@@ -74,7 +74,7 @@ class UI {
 			$show_access = (bool) elgg_extract('show_access', $options, false);
 
 			$relationship = elgg_extract('relationship', $options, array());
-			unset($options['reationship']);
+			unset($options['relationship']);
 			
 			$inverse_relationship = (bool) elgg_extract('inverse_relationship', $relationship, false);
 			$bilateral = (bool) elgg_extract('bileteral', $relationship, false);
