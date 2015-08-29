@@ -37,36 +37,8 @@ class MetadataField extends Field {
 			$md = new \stdClass();
 			$md->value = $this->getDefaultValue();
 			$values = array($md);
-		} else if (($this->getValueType() == 'tags' || !$this->isMultiple()) && sizeof($values) > 1) {
-			$shortname = $this->getShortname();
-			$md = new \stdClass();
-			$md->id = $values[0]->id;
-			$md->name = $shortname;
-			$value = $entity->$shortname;
-			if (is_array($value)) {
-				$md->value = implode(', ', $value);
-			} else {
-				$md->value = $value;
-			}
-			$md->access_id = $values[0]->access_id;
-			$md->owner_guid = $values[0]->owner_guid;
-			$values = array($md);
-		} else if (in_array($this->getValueType(), array('checkboxes', 'radio'))) {
-			$shortname = $this->getShortname();
-			$md = new \stdClass();
-			$md->id = $values[0]->id;
-			$md->name = $shortname;
-			$value = $entity->$shortname;
-			if (is_array($value)) {
-				$md->value = $value;
-			} else {
-				$md->value = array($value);
-			}
-			$md->access_id = $values[0]->access_id;
-			$md->owner_guid = $values[0]->owner_guid;
-			$values = array($md);
 		}
-
+		
 		return array_values($values);
 	}
 

@@ -30,6 +30,36 @@ if (empty($annotations)) {
 	return;
 }
 
+if (($field->getValueType() == 'tags' || !$field->isMultiple()) && sizeof($values) > 1) {
+	$shortname = $field->getShortname();
+	$ann = new \stdClass();
+	$ann->id = $values[0]->id;
+	$ann->name = $shortname;
+	$value = $entity->$shortname;
+	if (is_array($value)) {
+		$ann->value = implode(', ', $value);
+	} else {
+		$ann->value = $value;
+	}
+	$ann->access_id = $values[0]->access_id;
+	$ann->owner_guid = $values[0]->owner_guid;
+	$annotations = array($ann);
+} else if (in_array($field->getValueType(), array('checkboxes', 'radio'))) {
+	$shortname = $field->getShortname();
+	$ann = new \stdClass();
+	$ann->id = $values[0]->id;
+	$ann->name = $shortname;
+	$value = $entity->$shortname;
+	if (is_array($value)) {
+		$ann->value = $value;
+	} else {
+		$ann->value = array($value);
+	}
+	$ann->access_id = $values[0]->access_id;
+	$ann->owner_guid = $values[0]->owner_guid;
+	$annotations = array($ann);
+}
+
 echo elgg_view('prototyper/input/before', $vars);
 
 foreach ($annotations as $ann) {

@@ -37,34 +37,6 @@ class AnnotationField extends Field {
 			$ann = new \stdClass();
 			$ann->value = $this->getDefaultValue();
 			$values = array($ann);
-		} else if (($this->getValueType() == 'tags' || !$this->isMultiple()) && sizeof($values) > 1) {
-			$shortname = $this->getShortname();
-			$ann = new \stdClass();
-			$ann->id = $values[0]->id;
-			$ann->name = $shortname;
-			$value = $entity->$shortname;
-			if (is_array($value)) {
-				$ann->value = implode(', ', $value);
-			} else {
-				$ann->value = $value;
-			}
-			$ann->access_id = $values[0]->access_id;
-			$ann->owner_guid = $values[0]->owner_guid;
-			$values = array($ann);
-		} else if (in_array($this->getValueType(), array('checkboxes', 'radio'))) {
-			$shortname = $this->getShortname();
-			$ann = new \stdClass();
-			$ann->id = $values[0]->id;
-			$ann->name = $shortname;
-			$value = $entity->$shortname;
-			if (is_array($value)) {
-				$ann->value = $value;
-			} else {
-				$ann->value = array($value);
-			}
-			$ann->access_id = $values[0]->access_id;
-			$ann->owner_guid = $values[0]->owner_guid;
-			$values = array($ann);
 		}
 
 		return array_values($values);

@@ -31,6 +31,36 @@ if (empty($metadata)) {
 	return;
 }
 
+if (($field->getValueType() == 'tags' || !$field->isMultiple()) && sizeof($values) > 1) {
+	$shortname = $field->getShortname();
+	$md = new \stdClass();
+	$md->id = $values[0]->id;
+	$md->name = $shortname;
+	$value = $entity->$shortname;
+	if (is_array($value)) {
+		$md->value = implode(', ', $value);
+	} else {
+		$md->value = $value;
+	}
+	$md->access_id = $values[0]->access_id;
+	$md->owner_guid = $values[0]->owner_guid;
+	$metadata = array($md);
+} else if (in_array($field->getValueType(), array('checkboxes', 'radio'))) {
+	$shortname = $field->getShortname();
+	$md = new \stdClass();
+	$md->id = $values[0]->id;
+	$md->name = $shortname;
+	$value = $entity->$shortname;
+	if (is_array($value)) {
+		$md->value = $value;
+	} else {
+		$md->value = array($value);
+	}
+	$md->access_id = $values[0]->access_id;
+	$md->owner_guid = $values[0]->owner_guid;
+	$metadata = array($md);
+}
+
 echo elgg_view('prototyper/input/before', $vars);
 
 foreach ($metadata as $md) {
