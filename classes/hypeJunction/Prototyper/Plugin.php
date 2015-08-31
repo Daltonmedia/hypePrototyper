@@ -90,7 +90,7 @@ final class Plugin extends \hypeJunction\Plugin {
 		elgg_extend_view('css/elgg', 'css/framework/prototyper/stylesheet');
 		elgg_extend_view('css/admin', 'css/framework/prototyper/stylesheet');
 
-		elgg_register_css('jquery.cropper', '/mod/hypePrototyperUI/vendors/jquery.cropper/cropper.min.css');
+		elgg_register_css('jquery.cropper', '/mod/hypePrototyper/vendors/jquery.cropper/cropper.min.css');
 
 		elgg_extend_view('prototyper/input/before', 'prototyper/elements/js');
 
@@ -99,13 +99,13 @@ final class Plugin extends \hypeJunction\Plugin {
 			elgg_register_simplecache_view('js/framework/legacy/prototyper');
 			elgg_register_js('prototyper', elgg_get_simplecache_url('js', 'framework/legacy/prototyper'), 'footer');
 
-			elgg_register_js('jquery.cropper', '/mod/hypePrototyperUI/vendors/jquery.cropper/cropper.min.js', 'footer');
+			elgg_register_js('jquery.cropper', '/mod/hypePrototyper/vendors/jquery.cropper/cropper.min.js', 'footer');
 
 			elgg_register_simplecache_view('js/framework/legacy/prototyper_cropper');
 			elgg_register_js('prototyper_cropper', elgg_get_simplecache_url('js', 'framework/legacy/prototyper_cropper'), 'footer');
 		} else {
 			elgg_define_js('cropper', array(
-				'src' => '/mod/hypePrototyperUI/vendors/jquery.cropper/cropper.min.js',
+				'src' => '/mod/hypePrototyper/vendors/jquery.cropper/cropper.min.js',
 				'deps' => array('jquery'),
 			));
 		}
