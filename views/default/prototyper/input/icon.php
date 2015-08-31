@@ -56,7 +56,7 @@ echo elgg_view('prototyper/input/before', $vars);
 			}
 			echo elgg_view_image_block('', $input, array(
 				'image_alt' => $icon,
-				'class' => 'prototyper-icon-input',
+				'class' => 'prototyper-upload-input prototyper-icon-input',
 			));
 
 			if ($field->isValid() === false) {
