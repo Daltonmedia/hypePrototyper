@@ -25,6 +25,7 @@ if ($required) {
 }
 
 $input_vars = $field->getInputVars($entity);
+$input_vars['multiple'] = $multiple;
 $input_vars['name'] = $name;
 $value = $field->getValues($entity);
 if ($value) {
