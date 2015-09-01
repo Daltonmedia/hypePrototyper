@@ -89,8 +89,9 @@ class Form {
 			$i++;
 		}
 
-		$submit = elgg_view('input/submit', array(
-			'value' => elgg_echo('save')
+		$submit = elgg_view('prototyper/input/submit', array(
+			'entity' => $this->entity,
+			'action' => $this->action,
 		));
 
 		$output .= elgg_format_element('div', array(
