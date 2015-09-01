@@ -31,10 +31,10 @@ if (empty($metadata)) {
 	return;
 }
 
-if (($field->getValueType() == 'tags' || !$field->isMultiple()) && sizeof($values) > 1) {
+if (($field->getValueType() == 'tags' || !$field->isMultiple()) && sizeof($metadata) > 1) {
 	$shortname = $field->getShortname();
 	$md = new \stdClass();
-	$md->id = $values[0]->id;
+	$md->id = $metadata[0]->id;
 	$md->name = $shortname;
 	$value = $entity->$shortname;
 	if (is_array($value)) {
@@ -42,13 +42,13 @@ if (($field->getValueType() == 'tags' || !$field->isMultiple()) && sizeof($value
 	} else {
 		$md->value = $value;
 	}
-	$md->access_id = $values[0]->access_id;
-	$md->owner_guid = $values[0]->owner_guid;
+	$md->access_id = $metadata[0]->access_id;
+	$md->owner_guid = $metadata[0]->owner_guid;
 	$metadata = array($md);
 } else if (in_array($field->getValueType(), array('checkboxes', 'radio'))) {
 	$shortname = $field->getShortname();
 	$md = new \stdClass();
-	$md->id = $values[0]->id;
+	$md->id = $metadata[0]->id;
 	$md->name = $shortname;
 	$value = $entity->$shortname;
 	if (is_array($value)) {
@@ -56,8 +56,8 @@ if (($field->getValueType() == 'tags' || !$field->isMultiple()) && sizeof($value
 	} else {
 		$md->value = array($value);
 	}
-	$md->access_id = $values[0]->access_id;
-	$md->owner_guid = $values[0]->owner_guid;
+	$md->access_id = $metadata[0]->access_id;
+	$md->owner_guid = $metadata[0]->owner_guid;
 	$metadata = array($md);
 }
 

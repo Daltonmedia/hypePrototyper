@@ -30,10 +30,10 @@ if (empty($annotations)) {
 	return;
 }
 
-if (($field->getValueType() == 'tags' || !$field->isMultiple()) && sizeof($values) > 1) {
+if (($field->getValueType() == 'tags' || !$field->isMultiple()) && sizeof($annotations) > 1) {
 	$shortname = $field->getShortname();
 	$ann = new \stdClass();
-	$ann->id = $values[0]->id;
+	$ann->id = $annotations[0]->id;
 	$ann->name = $shortname;
 	$value = $entity->$shortname;
 	if (is_array($value)) {
@@ -41,13 +41,13 @@ if (($field->getValueType() == 'tags' || !$field->isMultiple()) && sizeof($value
 	} else {
 		$ann->value = $value;
 	}
-	$ann->access_id = $values[0]->access_id;
-	$ann->owner_guid = $values[0]->owner_guid;
+	$ann->access_id = $annotations[0]->access_id;
+	$ann->owner_guid = $annotations[0]->owner_guid;
 	$annotations = array($ann);
 } else if (in_array($field->getValueType(), array('checkboxes', 'radio'))) {
 	$shortname = $field->getShortname();
 	$ann = new \stdClass();
-	$ann->id = $values[0]->id;
+	$ann->id = $annotations[0]->id;
 	$ann->name = $shortname;
 	$value = $entity->$shortname;
 	if (is_array($value)) {
@@ -55,8 +55,8 @@ if (($field->getValueType() == 'tags' || !$field->isMultiple()) && sizeof($value
 	} else {
 		$ann->value = array($value);
 	}
-	$ann->access_id = $values[0]->access_id;
-	$ann->owner_guid = $values[0]->owner_guid;
+	$ann->access_id = $annotations[0]->access_id;
+	$ann->owner_guid = $annotations[0]->owner_guid;
 	$annotations = array($ann);
 }
 
