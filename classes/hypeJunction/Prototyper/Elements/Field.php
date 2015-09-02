@@ -260,8 +260,7 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 	 */
 	public function viewInput($vars = array()) {
 		$vars['field'] = $this;
-		$data_type = $this->getDataType();
-		return elgg_view("prototyper/input/$data_type", $vars);
+		return elgg_view("prototyper/elements/field", $vars);
 	}
 
 	/**
