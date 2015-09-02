@@ -5,7 +5,7 @@ namespace hypeJunction\Prototyper\Elements;
 abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldData, FieldStickyValues, FieldValidation {
 
 	/**
-	 * Short name of the field (used as metadata or annotation or relationship name)
+	 * Short name of the field
 	 * @var string
 	 */
 	protected $shortname;

@@ -172,12 +172,6 @@ function prepare_profile_edit_form($hook, $type, $return, $params) {
 				'maxlength' => 4,
 			),
 		),
-		'empathy' => array(
-			'type' => 'stars',
-			'data_type' => 'annotation',
-			'min' => 0,
-			'max' => 10,
-		),
 		'spouse' => array(
 			'type' => 'autocomplete',
 			'data_type' => 'relationship',
@@ -197,7 +191,7 @@ function prepare_profile_edit_form($hook, $type, $return, $params) {
 ```
 
 Fields are defined as ```$shortname => $value``` pairs, where the ```$shortname``` is a
-name of an attribute, metadata, annotation etc. and ```$value``` is
+name of an attribute, metadata etc. and ```$value``` is
 a string that describes the input type (e.g. text, dropdown etc) or an array
 with the following properties:
 
@@ -205,7 +199,6 @@ with the following properties:
 * ```data_type``` - a model used to store and retrieve values (default ```metadata```)
 	> ```attribute``` - an entity attribute, e.g. guid
 	> ```metadata``` - an entity metadata
-	> ```annotation``` - an entity annotation
 	> ```relationship``` - an entity relationship
 	> ```icon``` - an entity icon
 	> ```category``` - entity categories (hypeCategories)
@@ -219,7 +212,7 @@ with the following properties:
 * ```admin_only``` - whether or not the field is only visible to admins (default ```false```)
 * ```hide_on_profile``` - whether or not the field should be hidden on automatically generated profile (default ```false```)
 * ```priority``` - order of the field (default ```500```)
-	This allows users to specify an access level for the metadata, annotation or attachment created
+	This allows users to specify an access level for the metadata or attachment created
 * ```label``` - what label to display with the input field (default ```true```)
 	> ```true``` - set to ```elgg_echo("label:$type:$subtype:$shortname")```;
 	> ```false``` - do not display a label
