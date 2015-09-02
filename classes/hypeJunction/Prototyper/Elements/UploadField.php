@@ -60,17 +60,16 @@ class UploadField extends Field {
 	public function handle(ElggEntity $entity) {
 
 		$shortname = $this->getShortname();
-		$future_value = $_FILES[$shortname];
-
-		$value = $_FILES[$shortname];
+		$value = elgg_extract($shortname, $_FILES, array());
 		$error_type = elgg_extract('error', $value);
 
-		$has_uploaded_file = ($error_type != UPLOAD_ERR_NO_FILE);
-
+		$has_uploaded_file = $error_type != UPLOAD_ERR_NO_FILE;
 		if (!$has_uploaded_file) {
 			return $entity;
 		}
 
+		$future_value = $value['tmp_name'];
+		
 		$params = array(
 			'field' => $this,
 			'entity' => $entity,

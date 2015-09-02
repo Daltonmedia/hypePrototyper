@@ -23,6 +23,13 @@ class IconField extends UploadField {
 	public function handle(\ElggEntity $entity) {
 
 		$shortname = $this->getShortname();
+		$value = elgg_extract($shortname, $_FILES, array());
+		$error_type = elgg_extract('error', $value);
+
+		$has_uploaded_file = $error_type != UPLOAD_ERR_NO_FILE;
+		if (!$has_uploaded_file) {
+			return $entity;
+		}
 
 		$icon_sizes = hypeApps()->iconFactory->getSizes($entity);
 		$custom_icon_sizes = (array) $this->input_vars->{"icon_sizes"};

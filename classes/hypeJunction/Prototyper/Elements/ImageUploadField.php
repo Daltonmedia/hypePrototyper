@@ -10,21 +10,23 @@ class ImageUploadField extends UploadField {
 	 * {@inheritdoc}
 	 */
 	public function handle(\ElggEntity $entity) {
-
+		
 		$this->tmp_icon_sizes = array();
 
 		// make sure we do not duplicate icon creation
 		elgg_register_plugin_hook_handler('entity:icon:sizes', 'object', array($this, 'getIconSizes'), 999);
-
-		$result = parent::handle($entity);
-
+		parent::handle($entity);
 		elgg_unregister_plugin_hook_handler('entity:icon:sizes', 'object', array($this, 'getIconSizes'));
 
-		if (!$result) {
+		$shortname = $this->getShortname();
+		$value = elgg_extract($shortname, $_FILES, array());
+		$error_type = elgg_extract('error', $value);
+
+		$has_uploaded_file = $error_type != UPLOAD_ERR_NO_FILE;
+		if (!$has_uploaded_file) {
 			return $entity;
 		}
 
-		$shortname = $this->getShortname();
 		$upload = $this->getValues($entity);
 
 		$icon_sizes = hypeApps()->iconFactory->getSizes($upload);
