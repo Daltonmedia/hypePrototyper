@@ -89,7 +89,7 @@ class Form {
 			$i++;
 		}
 
-		$submit = elgg_view('prototyper/input/submit', array(
+		$submit = elgg_view('prototyper/elements/submit', array(
 			'entity' => $this->entity,
 			'action' => $this->action,
 		));
