@@ -141,12 +141,10 @@ function prepare_profile_edit_form($hook, $type, $return, $params) {
 		'interests' => array(
 			'type' => 'tags',
 			'required' => true,
-			'show_access' => ACCESS_PRIVATE,
 		),
 		'favorite_foods' => array(
 			'type' => 'text',
 			'multiple' => true,
-			'show_access' => true,
 		),
 		'eye_color' => array(
 			'type' => 'dropdown',
@@ -166,7 +164,6 @@ function prepare_profile_edit_form($hook, $type, $return, $params) {
 			'type' => 'text',
 			'value_type' => 'number',
 			'multiple' => false,
-			'show_access' => false,
 			'required' => true,
 			'validation_rules' => array(
 				'min' => 25,
@@ -222,7 +219,6 @@ with the following properties:
 * ```admin_only``` - whether or not the field is only visible to admins (default ```false```)
 * ```hide_on_profile``` - whether or not the field should be hidden on automatically generated profile (default ```false```)
 * ```priority``` - order of the field (default ```500```)
-* ```show_access``` - whether or not to display an access input (default ```false```)
 	This allows users to specify an access level for the metadata, annotation or attachment created
 * ```label``` - what label to display with the input field (default ```true```)
 	> ```true``` - set to ```elgg_echo("label:$type:$subtype:$shortname")```;
@@ -255,7 +251,6 @@ hypePrototyper()->config->registerType('icon', \hypeJunction\Prototyper\Elements
 			'accept' => 'image/*',
 			'value_type' => 'image',
 			'multiple' => false,
-			'show_access' => false,
 			'input_view' => 'input/file',
 			'output_view' => false,
 			'ui_sections' => array(

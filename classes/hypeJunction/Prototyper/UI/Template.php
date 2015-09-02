@@ -10,7 +10,7 @@ class Template {
 	protected $sections = array(
 		'required' => true,
 		'adminonly' => true,
-		'access' => true,
+		'access' => false, // support for access has been removed
 		'multiple' => true,
 		'label' => true,
 		'help' => true,

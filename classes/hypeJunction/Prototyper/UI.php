@@ -71,7 +71,6 @@ class UI {
 			$multiple = (bool) elgg_extract('multiple', $options, false);
 			$admin_only = (bool) elgg_extract('admin_only', $options, false);
 			$hide_on_profile = (bool) elgg_extract('hide_on_profile', $options, false);
-			$show_access = (bool) elgg_extract('show_access', $options, false);
 
 			$relationship = elgg_extract('relationship', $options, array());
 			unset($options['relationship']);
@@ -144,7 +143,6 @@ class UI {
 				'admin_only' => $admin_only,
 				'hide_on_profile' => $hide_on_profile,
 				'multiple' => $multiple,
-				'show_access' => $show_access,
 				'inverse_relationship' => $inverse_relationship,
 				'bilateral' => $bilateral,
 				'value' => $value,

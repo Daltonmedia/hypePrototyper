@@ -39,13 +39,6 @@ class AttributeField extends Field {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function hasAccessInput() {
-		return false;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
 	public function validate(\ElggEntity $entity) {
 
 		$validation = new ValidationStatus();

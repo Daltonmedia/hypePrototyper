@@ -19,14 +19,6 @@ class RelationshipField extends Field {
 	protected $bilateral = false;
 
 	/**
-	 * Display access input
-	 * @return boolean
-	 */
-	public function hasAccessInput() {
-		return false;
-	}
-
-	/**
 	 * {@inheritdoc}
 	 */
 	public function getValues(\ElggEntity $entity) {

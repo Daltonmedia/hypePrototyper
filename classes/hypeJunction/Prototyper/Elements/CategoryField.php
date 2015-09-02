@@ -5,13 +5,6 @@ namespace hypeJunction\Prototyper\Elements;
 class CategoryField extends RelationshipField {
 
 	const CLASSNAME = __CLASS__;
-	
-	/**
-	 * {@inheritdoc}
-	 */
-	public function hasAccessInput() {
-		return false;
-	}
 
 	/**
 	 * {@inheritdoc}

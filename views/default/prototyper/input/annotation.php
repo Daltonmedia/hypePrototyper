@@ -87,35 +87,22 @@ foreach ($annotations as $ann) {
 
 	$input = elgg_view($view, $input_vars);
 
-	$show_access = $field->hasAccessInput();
 
-	$access = '';
-	if (is_int($show_access)) {
-		$access .= '<span class="elgg-access">' . get_readable_access_level($access_id) . '</span>';
-		$access_id = $show_access;
-		$access_type = 'hidden';
-	} else {
-		$access_id = ($ann->access_id) ? $ann->access_id : ($entity->guid) ? $entity->access_id : get_default_access();
-		if ($show_access === true && $type !== 'hidden') {
-			$access_type = 'access';
-		} else {
-			$access_type = 'hidden';
-		}
-	}
-	$access .= elgg_view("input/$access_type", array(
+	$access_id = ($ann->access_id) ? $ann->access_id : ($entity->guid) ? $entity->access_id : get_default_access();
+	$hidden .= elgg_view("input/hidden", array(
 		'name' => "{$name}[access_id][{$index}]",
 		'value' => $access_id,
 	));
 
 	if ($type == 'hidden') {
-		echo $hidden . $access . $input;
+		echo $hidden . $input;
 		continue;
 	}
 	?>
 
 	<fieldset class="prototyper-fieldset prototyper-fieldset-annotation">
 		<div class="elgg-head">
-			<div class="prototyper-col-9">
+			<div class="prototyper-col-12">
 				<?php
 				if ($label) {
 					echo "<label $label_attrs>$label</label>";
@@ -140,18 +127,13 @@ foreach ($annotations as $ann) {
 				));
 				?>
 			</div>
-			<div class="prototyper-col-3 prototyper-access">
-				<?php
-				echo '<span>' . $access . '</span>';
-				?>
-			</div>
 		</div>
 		<div class="elgg-body">
 			<div class="prototyper-col-12">
 				<?php
 				echo $hidden;
 				echo $input;
-
+				
 				if ($field->isValid() === false) {
 					echo '<ul class="prototyper-validation-error prototyper-col-12">';
 					$messages = $field->getValidationMessages();

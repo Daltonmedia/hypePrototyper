@@ -117,12 +117,10 @@ final class Plugin extends \hypeJunction\Plugin {
 			'input_view' => 'input/text',
 			'output_view' => 'output/text',
 			'value_type' => 'text',
-			'show_access' => false,
 			'multiple' => false,
 			'required' => true,
 			'ui_sections' => array(
 				'multiple' => false,
-				'access' => false,
 			)
 		));
 		hypePrototyper()->config->registerType('name', Elements\AttributeField::CLASSNAME, array(
@@ -130,12 +128,10 @@ final class Plugin extends \hypeJunction\Plugin {
 			'input_view' => 'input/text',
 			'output_view' => 'output/text',
 			'value_type' => 'text',
-			'show_access' => false,
 			'multiple' => false,
 			'required' => true,
 			'ui_sections' => array(
 				'multiple' => false,
-				'access' => false,
 			)
 		));
 
@@ -144,11 +140,9 @@ final class Plugin extends \hypeJunction\Plugin {
 			'input_view' => 'input/longtext',
 			'output_view' => 'output/longtext',
 			'value_type' => 'text',
-			'show_access' => false,
 			'multiple' => false,
 			'ui_sections' => array(
 				'multiple' => false,
-				'access' => false,
 			)
 		));
 
@@ -158,12 +152,10 @@ final class Plugin extends \hypeJunction\Plugin {
 			'input_view' => 'input/access',
 			'output_view' => 'output/access',
 			'value_type' => 'int',
-			'show_access' => false,
 			'multiple' => false,
 			'required' => true,
 			'ui_sections' => array(
 				'multiple' => false,
-				'access' => false,
 			)
 		));
 
@@ -179,12 +171,10 @@ final class Plugin extends \hypeJunction\Plugin {
 		hypePrototyper()->config->registerType('hidden', Elements\MetadataField::CLASSNAME, array(
 			'multiple' => false,
 			'required' => false,
-			'show_access' => false,
 			'label' => false,
 			'help' => false,
 			'ui_sections' => array(
 				'required' => false,
-				'access' => false,
 				'multiple' => false,
 				'label' => false,
 				'help' => false,
@@ -252,9 +242,7 @@ final class Plugin extends \hypeJunction\Plugin {
 			'inverse_relationship' => false,
 			'bilateral' => false,
 			'multiple' => false,
-			'show_access' => false,
 			'ui_sections' => array(
-				'access' => false,
 				'multiple' => false,
 				'relationship' => true,
 			)
@@ -265,9 +253,7 @@ final class Plugin extends \hypeJunction\Plugin {
 			'inverse_relationship' => false,
 			'bilateral' => false,
 			'multiple' => false,
-			'show_access' => false,
 			'ui_sections' => array(
-				'access' => false,
 				'multiple' => false,
 				'relationship' => true,
 			)
@@ -279,9 +265,7 @@ final class Plugin extends \hypeJunction\Plugin {
 				'inverse_relationship' => false,
 				'bilateral' => false,
 				'multiple' => true,
-				'show_access' => false,
 				'ui_sections' => array(
-					'access' => false,
 					'multiple' => true,
 					'relationship' => false,
 				)
@@ -292,23 +276,19 @@ final class Plugin extends \hypeJunction\Plugin {
 			'accept' => 'image/*',
 			'value_type' => 'image',
 			'multiple' => false,
-			'show_access' => false,
 			'input_view' => 'input/file',
 			'output_view' => 'icon/default',
 			'ui_sections' => array(
 				'value' => false,
-				'access' => false,
 				'multiple' => false,
 			)
 		));
 
 		hypePrototyper()->config->registerType('upload', Elements\UploadField::CLASSNAME, array(
 			'multiple' => false,
-			'show_access' => false,
 			'input_view' => 'input/file',
 			'ui_sections' => array(
 				'value' => true,
-				'access' => false,
 				'multiple' => false,
 				'validation' => true
 			)
@@ -318,14 +298,12 @@ final class Plugin extends \hypeJunction\Plugin {
 			'multiple' => false,
 			'accept' => 'image/*',
 			'value_type' => 'image',
-			'show_access' => false,
 			'input_view' => 'input/file',
 			'validation_rules' => array(
 				'type' => 'image',
 			),
 			'ui_sections' => array(
 				'value' => true,
-				'access' => false,
 				'multiple' => false,
 				'validation' => true
 			)
