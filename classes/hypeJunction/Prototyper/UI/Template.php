@@ -11,7 +11,7 @@ class Template {
 		'required' => true,
 		'adminonly' => true,
 		'access' => false, // support for access has been removed
-		'multiple' => true,
+		'multiple' => false,
 		'label' => true,
 		'help' => true,
 		'optionsvalues' => false,
