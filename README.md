@@ -228,7 +228,7 @@ with the following properties:
 	> ```true``` - set to ```elgg_echo("help:$type:$subtype:$shortname")```;
 	> ```false``` - do not display help text
 	> any other custom string
-* ```multiple``` - whether or not a user can clone the field and add multiple values (default ```false```)
+* ```multiple``` - multiple attribute passed to the input view. Whether or not this has any effect depends on the input view (default ```false```)
 * ```validation_rules``` - an array of rule => expecation pairs
 	You can define custom validation rules and use ```'validate:$rule','prototyper'``` to validate the values
 	See hypePrototyperValidators for a full list of available validators

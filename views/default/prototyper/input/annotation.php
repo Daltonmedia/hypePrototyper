@@ -107,20 +107,6 @@ foreach ($annotations as $ann) {
 				if ($label) {
 					echo "<label $label_attrs>$label</label>";
 				}
-				if ($multiple) {
-					echo elgg_view('output/url', array(
-						'text' => elgg_view_icon('prototyper-round-plus'),
-						'href' => 'javascript:void(0);',
-						'class' => 'prototyper-clone',
-						'is_trusted' => true,
-					));
-					echo elgg_view('output/url', array(
-						'text' => elgg_view_icon('prototyper-round-minus'),
-						'href' => 'javascript:void(0);',
-						'class' => 'prototyper-remove',
-						'is_trusted' => true,
-					));
-				}
 				echo elgg_view('prototyper/elements/help', array(
 					'value' => $help,
 					'field' => $field,
