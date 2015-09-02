@@ -160,7 +160,6 @@ final class Plugin extends \hypeJunction\Plugin {
 		));
 
 		hypePrototyper()->config->registerType('text', Elements\MetadataField::CLASSNAME);
-		hypePrototyper()->config->registerType('text', Elements\AnnotationField::CLASSNAME);
 
 		hypePrototyper()->config->registerType('plaintext', Elements\MetadataField::CLASSNAME, array(
 			'value_type' => 'text',
@@ -225,12 +224,6 @@ final class Plugin extends \hypeJunction\Plugin {
 		hypePrototyper()->config->registerType('url', Elements\MetadataField::CLASSNAME);
 
 		hypePrototyper()->config->registerType('stars', Elements\MetadataField::CLASSNAME, array(
-			'value_type' => 'number',
-			'ui_sections' => array(
-				'validation' => false,
-			)
-		));
-		hypePrototyper()->config->registerType('stars', Elements\AnnotationField::CLASSNAME, array(
 			'value_type' => 'number',
 			'ui_sections' => array(
 				'validation' => false,
