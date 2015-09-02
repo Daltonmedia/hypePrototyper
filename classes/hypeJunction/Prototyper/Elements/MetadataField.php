@@ -41,7 +41,15 @@ class MetadataField extends Field {
 		if (empty($values) && $this->isRequired()) {
 			$validation->setFail(elgg_echo('prototyper:validate:error:required', array($this->getLabel())));
 		} else {
-			$validation = $this->applyValidationRules($values, $validation, $entity);
+			if ($this->isMultiple()) {
+				$values = (array) $values;
+				foreach ($values as $value) {
+					$validation = $this->applyValidationRules($value, $validation, $entity);
+				}
+			} else {
+				$validation = $this->applyValidationRules($values, $validation, $entity);
+			}
+			
 		}
 
 		return $validation;
