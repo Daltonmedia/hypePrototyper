@@ -105,11 +105,10 @@
 .prototyper-fieldset label { display: inline-block; }
 .prototyper-fieldset label + .elgg-text-help { padding: 0; }
 .prototyper-fieldset .elgg-foot { margin-top: 10px; text-align: right; }
-.prototyper-fieldset .prototyper-clone { font-size: 16px; margin-left: 15px; }
-.prototyper-fieldset .prototyper-remove { font-size: 16px; margin-left: 5px; }
 .prototyper-fieldset > div { margin: 0; }
-.prototyper-fieldset .prototyper-validation-error, .prototyper-fieldset .parsley-errors-list { padding-left: 25px; list-style: circle; color: red; margin: 0; font-size: 13px; line-height: normal; }
-.prototyper-fieldset .prototyper-validation-error > li, .prototyper-fieldset .parsley-errors-list > li { margin: 5px 0; padding: 0; }
+.prototyper-fieldset .prototyper-validation-error, .prototyper-fieldset .prototyper-validation-errors, .prototyper-fieldset .parsley-errors-list { display: none; padding-left: 25px; list-style: circle; color: red; margin: 0; font-size: 13px; line-height: normal; }
+.prototyper-fieldset .prototyper-validation-error > li, .prototyper-fieldset .prototyper-validation-errors > li, .prototyper-fieldset .parsley-errors-list > li { margin: 5px 0; padding: 0; }
+.prototyper-fieldset.prototyper-fieldset-has-errors .prototyper-validation-error, .prototyper-fieldset.prototyper-fieldset-has-errors .prototyper-validation-errors, .prototyper-fieldset.prototyper-fieldset-has-errors .parsley-errors-list { display: block; }
 
 .elgg-icon.elgg-icon-prototyper-question { background: none; display: inline-block; font-family: FontAwesome; font-style: normal; font-weight: normal; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 .elgg-icon.elgg-icon-prototyper-question:after { content: "\f128"; }
