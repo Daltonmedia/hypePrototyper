@@ -16,10 +16,10 @@ if (!$label) {
 
 $label_attrs = array();
 if ($required) {
-	$label_attrs = elgg_format_attributes(array(
+	$label_attrs = array(
 		'class' => 'required',
 		'title' => elgg_echo('prototyper:required')
-	));
+	);
 }
 
 echo elgg_format_element('label', $label_attrs, $label);
