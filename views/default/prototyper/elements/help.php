@@ -1,16 +1,16 @@
 <?php
+use hypeJunction\Prototyper\Elements\Field;
 
-/**
- * Help text
- * @uses $vars['value'] Help text
- */
+$field = elgg_extract('field', $vars);
+if (!$field instanceof Field) {
+	return;
+}
 
-$value = elgg_extract('value', $vars);
-
-if (empty($value)) {
+$help = $field->getHelp();
+if (!$help) {
 	return;
 }
 
 echo elgg_format_element('div', array(
 	'class' => 'elgg-text-help',
-), $value);
+		), $help);

@@ -321,6 +321,7 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 	public function isHiddenOnProfile() {
 		return ($this->hide_on_profile);
 	}
+
 	/**
 	 * {@inheritdoc}
 	 */
@@ -332,9 +333,15 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 	 * {@inheritdoc}
 	 */
 	public function getInputVars(\ElggEntity $entity) {
-		$this->input_vars->entity = ($entity->guid) ? $entity : null;
-		$this->input_vars->required = $this->isRequired();
 
+		$this->input_vars->name = $this->getShortname();
+		$this->input_vars->entity = ($entity->guid) ? $entity : null;
+		$this->input_vars->multiple = $this->isMultiple();
+		$this->input_vars->required = $this->isRequired();
+		$this->input_vars->placeholder = $this->getLabel();
+		$this->input_vars->{"data-reset"} = true; // can be used by JS to reset input value on field cloning
+		$this->input_vars->value = $this->getValues($entity);
+		
 		if (!empty($this->input_vars->options_values) && is_array($this->input_vars->options_values)) {
 			$lang = get_language();
 			$options_values = array();
@@ -353,9 +360,11 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 			}
 
 			if ($this->type == 'checkboxes' || $this->type == 'radio') {
+				unset($this->input_vars->options_values);
 				$this->input_vars->options = array_flip($options_values);
+			} else {
+				$this->input_vars->options_values = $options_values;
 			}
-			$this->input_vars->options_values = $options_values;
 		}
 
 		$vars = (array) $this->input_vars;
@@ -364,7 +373,7 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 		foreach ($clean as $key) {
 			unset($vars[$key]);
 		}
-		
+
 		return elgg_trigger_plugin_hook('input_vars', 'prototyper', array(
 			'field' => $this,
 			'entity' => $entity,

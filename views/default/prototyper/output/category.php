@@ -22,13 +22,22 @@ if (\hypeJunction\Integration::isElggVersionBelow('1.9.0')) {
 $label = $field->getLabel();
 $view = $field->getOutputView();
 
+$categories = array();
 $relationships = $field->getValues($entity);
-if (!count($relationships)) {
+if ($relationships instanceof ElggBatch) {
+	foreach ($relationships as $guid) {
+		$categories[] = $guid;
+	}
+} else {
+	$categories = $relationships;
+}
+
+if (!count($categories)) {
 	return;
 }
 
-if ($relationships) {
-	foreach ($relationships as $guid) {
+if ($categories) {
+	foreach ($categories as $guid) {
 		$entity = get_entity($guid);
 		if ($entity) {
 			$entities[] = get_entity($guid);
