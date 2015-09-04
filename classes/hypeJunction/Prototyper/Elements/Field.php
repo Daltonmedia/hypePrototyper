@@ -276,8 +276,7 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 	 */
 	public function viewOutput($vars = array()) {
 		$vars['field'] = $this;
-		$data_type = $this->getDataType();
-		return elgg_view("prototyper/output/$data_type", $vars);
+		return elgg_view("prototyper/elements/profile", $vars);
 	}
 
 	/**
@@ -384,7 +383,9 @@ abstract class Field implements FieldProperties, FieldInput, FieldOutput, FieldD
 	 * {@inheritdoc}
 	 */
 	public function getOutputVars(\ElggEntity $entity) {
+		$this->output_vars->name = $this->getShortname();
 		$this->output_vars->entity = $entity;
+		$this->output_vars->value = $this->getValues($entity);
 		return (array) $this->output_vars;
 	}
 
