@@ -37,7 +37,7 @@ class UploadField extends Field {
 		$value = elgg_extract($shortname, $_FILES, array());
 		$error_type = elgg_extract('error', $value);
 
-		$has_uploaded_file = ($error_type && $error_type != UPLOAD_ERR_NO_FILE);
+		$has_uploaded_file = $error_type != UPLOAD_ERR_NO_FILE;
 		if (!$has_uploaded_file) {
 			if ($this->isRequired() && empty($this->getValues($entity))) {
 				$validation->setFail(elgg_echo('prototyper:validate:error:required', array($this->getLabel())));
