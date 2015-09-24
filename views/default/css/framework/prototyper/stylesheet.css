@@ -127,3 +127,7 @@
 .prototyper-image-upload-cropper .elgg-text-help { display: none; margin: 0; }
 .prototyper-image-upload-cropper.prototyper-has-preview { padding: 15px; }
 .prototyper-image-upload-cropper.prototyper-has-preview .elgg-text-help { display: block; }
+
+.prototyper-multi-edit-mode > li, .prototyper-multi-edit-mode > .elgg-widget-placeholder { display: inline-block; vertical-align: middle; float: none; margin: 3px; position: relative; }
+.prototyper-multi-edit-mode > li .prototyper-multi-item-delete, .prototyper-multi-edit-mode > li .prototyper-multi-item-drag, .prototyper-multi-edit-mode > .elgg-widget-placeholder .prototyper-multi-item-delete, .prototyper-multi-edit-mode > .elgg-widget-placeholder .prototyper-multi-item-drag { position: absolute; top: 0; right: 0; margin: 0; width: 20px; height: 20px; line-height: 18px; text-align: center; background: #fff; margin: 1px; }
+.prototyper-multi-edit-mode > li .prototyper-multi-item-drag, .prototyper-multi-edit-mode > .elgg-widget-placeholder .prototyper-multi-item-drag { position: absolute; top: 0; left: 0; cursor: move; }

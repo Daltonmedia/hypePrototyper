@@ -256,8 +256,25 @@ final class Plugin extends \hypeJunction\Plugin {
 			'input_view' => 'input/file',
 			'ui_sections' => array(
 				'value' => false,
+				'validation' => false,
 			)
 		));
+
+		if (elgg_is_active_plugin('hypeDropzone')) {
+			elgg_register_action('prototyper/multi/sort', $this->plugin->getPath() . 'actions/prototyper/multi/sort.php');
+			hypePrototyper()->config->registerType('multi_upload', Elements\MultiUploadField::CLASSNAME, array(
+				'multiple' => true,
+				'input_view' => 'input/prototyper/multi_upload',
+				'validation_rules' => array(
+					'type' => 'guid',
+				),
+				'ui_sections' => array(
+					'value' => false,
+					'multiple' => false,
+					'validation' => false,
+				)
+			));
+		}
 
 		hypePrototyper()->config->registerType('image_upload', Elements\ImageUploadField::CLASSNAME, array(
 			'multiple' => false,
