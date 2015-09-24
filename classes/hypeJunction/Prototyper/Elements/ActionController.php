@@ -70,7 +70,7 @@ class ActionController {
 
 		if ($result) {
 			system_message(elgg_echo('prototyper:action:success'));
-			forward($this->getEntity()->getURL());
+			forward($this->entity->getURL());
 		} else {
 			register_error(elgg_echo('prototyper:action:error'));
 			forward(REFERER);
