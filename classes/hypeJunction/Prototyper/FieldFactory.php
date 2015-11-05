@@ -40,10 +40,11 @@ class FieldFactory {
 		if (empty($options['data_type'])) {
 			$options['data_type'] = 'metadata';
 		}
-
-		$defaults = (array) $this->config->getType($options['data_type'], $options['type']);
-
-		$options = array_merge($defaults, $options);
+		
+		$defaults = $this->config->getType($options['data_type'], $options['type']);
+		if (is_array($defaults)) {
+			$options = array_merge($defaults, $options);
+		}
 
 		$classname = elgg_extract('class_name', $options);
 		if (class_exists($classname)) {
