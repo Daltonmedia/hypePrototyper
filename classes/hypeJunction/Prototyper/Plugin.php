@@ -288,6 +288,10 @@ final class Plugin extends \hypeJunction\Plugin {
 				'value' => false,
 			)
 		));
+
+		elgg_extend_view('elements/forms/label', 'prototyper/input/before', 100);
+		elgg_extend_view('elements/forms/help', 'prototyper/elements/field/foot');
+		elgg_extend_view('elements/forms/help', 'prototyper/input/after');
 	}
 
 }

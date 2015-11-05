@@ -8,7 +8,7 @@ namespace hypeJunction\Prototyper;
 class Prototype {
 
 	const COOKIE_NAME = 'elgg_hP';
-	
+
 	/**
 	 * Config
 	 * @var Config
@@ -73,12 +73,12 @@ class Prototype {
 				if (empty($field['shortname'])) {
 					$field['shortname'] = $shortname;
 				}
-				
+
 				if (in_array($shortname, $attribute_names)) {
 					$field['data_type'] = 'attribute';
 					$field['class_name'] = Elements\AttributeField::CLASSNAME;
 				}
-				
+
 				$fieldObj = $this->fieldFactory->build($field);
 				if ($fieldObj instanceof Elements\Field) {
 					$fieldCollection[] = $fieldObj;
