@@ -87,28 +87,28 @@
 .prototyper-row:after { clear: both; }
 .prototyper-row [class*="prototyper-col"] { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
 
-.prototyper-fieldset * { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
-.prototyper-fieldset.has-legend { padding: 15px; border: 1px solid #cccccc; margin: 15px 0; }
-.prototyper-fieldset.has-legend legend { font-size: 110%; }
-.elgg-form .prototyper-fieldset { font-size: 13px; -webkit-box-shadow: 0 0 3px #cccccc; -moz-box-shadow: 0 0 3px #cccccc; box-shadow: 0 0 3px #cccccc; padding: 0; margin: 0 0 15px; }
-.prototyper-fieldset > .elgg-head { *zoom: 1; padding: 10px 0; margin: 0; background: #f4f4f4; border-bottom: 1px solid #ccc; }
-.prototyper-fieldset > .elgg-head:before, .prototyper-fieldset > .elgg-head:after { content: " "; display: table; }
-.prototyper-fieldset > .elgg-head:after { clear: both; }
-.prototyper-fieldset > .elgg-body { *zoom: 1; padding: 10px 0; margin: 0; }
-.prototyper-fieldset > .elgg-body:before, .prototyper-fieldset > .elgg-body:after { content: " "; display: table; }
-.prototyper-fieldset > .elgg-body:after { clear: both; }
-.prototyper-fieldset input[type="text"], .prototyper-fieldset input[type="password"], .prototyper-fieldset textarea { width: 100%; margin-bottom: 0; }
-.prototyper-fieldset input[type="file"] { width: auto; margin-bottom: 0; }
-.prototyper-fieldset input[type="checkbox"], .prototyper-fieldset input[type="radio"], .prototyper-fieldset select, .prototyper-fieldset label { margin-bottom: 0; }
-.prototyper-fieldset .elgg-input-access { width: 100%; max-width: 300px; height: 24px; font-size: 12px; padding: 2px; }
-.prototyper-fieldset .required:after { display: inline-block; width: 10px; margin: -5px 0 0 5px; content: "*"; font-weight: bold; color: #ee5f5b; }
-.prototyper-fieldset label { display: inline-block; }
-.prototyper-fieldset label + .elgg-text-help { padding: 0; }
-.prototyper-fieldset .elgg-foot { margin-top: 10px; text-align: right; }
-.prototyper-fieldset > div { margin: 0; }
-.prototyper-fieldset .prototyper-validation-error, .prototyper-fieldset .prototyper-validation-errors, .prototyper-fieldset .parsley-errors-list { display: none; padding-left: 25px; list-style: circle; color: red; margin: 0; font-size: 13px; line-height: normal; }
-.prototyper-fieldset .prototyper-validation-error > li, .prototyper-fieldset .prototyper-validation-errors > li, .prototyper-fieldset .parsley-errors-list > li { margin: 5px 0; padding: 0; }
-.prototyper-fieldset.prototyper-fieldset-has-errors .prototyper-validation-error, .prototyper-fieldset.prototyper-fieldset-has-errors .prototyper-validation-errors, .prototyper-fieldset.prototyper-fieldset-has-errors .parsley-errors-list { display: block; }
+.prototyper-fieldset:not(.elgg-field) * { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+.prototyper-fieldset:not(.elgg-field).has-legend { padding: 15px; border: 1px solid #cccccc; margin: 15px 0; }
+.prototyper-fieldset:not(.elgg-field).has-legend legend { font-size: 110%; }
+.elgg-form .prototyper-fieldset:not(.elgg-field) { font-size: 13px; -webkit-box-shadow: 0 0 3px #cccccc; -moz-box-shadow: 0 0 3px #cccccc; box-shadow: 0 0 3px #cccccc; padding: 0; margin: 0 0 15px; }
+.prototyper-fieldset:not(.elgg-field) > .elgg-head { *zoom: 1; padding: 10px 0; margin: 0; background: #f4f4f4; border-bottom: 1px solid #ccc; }
+.prototyper-fieldset:not(.elgg-field) > .elgg-head:before, .prototyper-fieldset:not(.elgg-field) > .elgg-head:after { content: " "; display: table; }
+.prototyper-fieldset:not(.elgg-field) > .elgg-head:after { clear: both; }
+.prototyper-fieldset:not(.elgg-field) > .elgg-body { *zoom: 1; padding: 10px 0; margin: 0; }
+.prototyper-fieldset:not(.elgg-field) > .elgg-body:before, .prototyper-fieldset:not(.elgg-field) > .elgg-body:after { content: " "; display: table; }
+.prototyper-fieldset:not(.elgg-field) > .elgg-body:after { clear: both; }
+.prototyper-fieldset:not(.elgg-field) input[type="text"], .prototyper-fieldset:not(.elgg-field) input[type="password"], .prototyper-fieldset:not(.elgg-field) textarea { width: 100%; margin-bottom: 0; }
+.prototyper-fieldset:not(.elgg-field) input[type="file"] { width: auto; margin-bottom: 0; }
+.prototyper-fieldset:not(.elgg-field) input[type="checkbox"], .prototyper-fieldset:not(.elgg-field) input[type="radio"], .prototyper-fieldset:not(.elgg-field) select, .prototyper-fieldset:not(.elgg-field) label { margin-bottom: 0; }
+.prototyper-fieldset:not(.elgg-field) .elgg-input-access { width: 100%; max-width: 300px; height: 24px; font-size: 12px; padding: 2px; }
+.prototyper-fieldset:not(.elgg-field) .required:after { display: inline-block; width: 10px; margin: -5px 0 0 5px; content: "*"; font-weight: bold; color: #ee5f5b; }
+.prototyper-fieldset:not(.elgg-field) label { display: inline-block; }
+.prototyper-fieldset:not(.elgg-field) label + .elgg-text-help { padding: 0; }
+.prototyper-fieldset:not(.elgg-field) .elgg-foot { margin-top: 10px; text-align: right; }
+.prototyper-fieldset:not(.elgg-field) > div { margin: 0; }
+.prototyper-fieldset:not(.elgg-field) .prototyper-validation-error, .prototyper-fieldset:not(.elgg-field) .prototyper-validation-errors, .prototyper-fieldset:not(.elgg-field) .parsley-errors-list { display: none; padding-left: 25px; list-style: circle; color: red; margin: 0; font-size: 13px; line-height: normal; }
+.prototyper-fieldset:not(.elgg-field) .prototyper-validation-error > li, .prototyper-fieldset:not(.elgg-field) .prototyper-validation-errors > li, .prototyper-fieldset:not(.elgg-field) .parsley-errors-list > li { margin: 5px 0; padding: 0; }
+.prototyper-fieldset:not(.elgg-field).prototyper-fieldset-has-errors .prototyper-validation-error, .prototyper-fieldset:not(.elgg-field).prototyper-fieldset-has-errors .prototyper-validation-errors, .prototyper-fieldset:not(.elgg-field).prototyper-fieldset-has-errors .parsley-errors-list { display: block; }
 
 .elgg-icon.elgg-icon-prototyper-question { background: none; display: inline-block; font-family: FontAwesome; font-style: normal; font-weight: normal; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 .elgg-icon.elgg-icon-prototyper-question:after { content: "\f128"; }

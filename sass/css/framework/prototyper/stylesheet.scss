@@ -1,5 +1,5 @@
 @import "compass/css3"; // compass css3 helpers
-@import "../../../../../../sass/global/variables";
+@import "../../../../../../mod/sass/global/variables";
 @import "variables";
 
 $grid : (12);
@@ -37,7 +37,7 @@ $cols : (1,2,3,4,5,6,7,8,9,10,11,12);
 	}
 }
 
-.prototyper-fieldset {
+.prototyper-fieldset:not(.elgg-field) {
 	* {
 		@include box-sizing(border-box);
 	}
