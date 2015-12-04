@@ -15,11 +15,11 @@ class AttributeField extends Field {
 		if ($sticky) {
 			return $sticky;
 		}
-		
+
 		$name = $this->getShortname();
 		switch ($name) {
 			default :
-				return ($entity->$name) ?: $this->getDefaultValue();
+				return ($entity->$name) ? : $this->getDefaultValue();
 
 			case 'type' :
 				return $entity->getType();
@@ -63,7 +63,25 @@ class AttributeField extends Field {
 	 */
 	public function handle(\ElggEntity $entity) {
 		$shortname = $this->getShortname();
-		$entity->$shortname = get_input($shortname, $entity->$shortname);
+
+		$value = get_input($shortname);
+
+		switch ($shortname) {
+			case 'owner_guid' :
+			case 'container_guid' :
+			case 'site_guid' :
+				if ($value || $value == '0') {
+					$entity->$shortname = $value;
+				}
+				break;
+
+			default :
+				if (isset($value)) {
+					$entity->$shortname = $value;
+				}
+				break;
+		}
+
 		return $entity;
 	}
 
