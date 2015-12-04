@@ -29,6 +29,10 @@ $head = elgg_view('prototyper/elements/profile/head', $vars);
 $body = elgg_view('prototyper/elements/profile/body', $vars);
 $after = elgg_view('prototyper/profile/after', $vars);
 
+if (empty($body)) {
+	return;
+}
+
 $class = array(
 	'prototyper-output',
 	"prototyper-profile-{$data_type}",
