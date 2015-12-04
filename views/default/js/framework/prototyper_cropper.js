@@ -1,8 +1,8 @@
 define(['elgg', 'jquery', 'cropper'], function (elgg, $) {
 
-	$(document).on('change', '.prototyper-upload-input input[type="file"]', function (e) {
+	$(document).on('change', '.prototyper-fieldset-input-image_upload input[type="file"]', function (e) {
 		var $elem = $(this);
-		var $container = $elem.closest('.prototyper-upload-input');
+		var $container = $elem.closest('.prototyper-fieldset-input-image_upload');
 		var $croppers = $container.find('.prototyper-image-upload-cropper');
 
 		if (!$croppers.length) {
