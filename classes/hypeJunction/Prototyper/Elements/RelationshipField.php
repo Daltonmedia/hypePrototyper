@@ -61,7 +61,7 @@ class RelationshipField extends Field {
 
 		$validation = new ValidationStatus();
 
-		$value = get_input($this->getShortname(), array());
+		$value = array_filter((array) get_input($this->getShortname(), array()));
 
 		if ($this->isRequired() && (!$value || !count($value))) {
 			$validation->setFail(elgg_echo('prototyper:validate:error:required', array($this->getLabel())));

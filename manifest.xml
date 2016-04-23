@@ -22,5 +22,10 @@
 		<type>plugin</type>
 		<name>hypeApps</name>
 	</requires>
+
+	<requires>
+		<type>plugin</type>
+		<name>forms_api</name>
+	</requires>
 	
 </plugin_manifest>
