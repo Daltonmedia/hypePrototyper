@@ -17,4 +17,11 @@ if (empty($value)) {
 	return;
 }
 
+switch ($output_view) {
+	case 'output/url' :
+		unset($output_vars['value']);
+		$output_vars['href'] = $value;
+		break;
+}
+
 echo elgg_view($output_view, $output_vars);
